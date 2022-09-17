@@ -36,8 +36,8 @@ class Frontend:
         # connection to a MindLink, this function will be run.
         self._api.start(connect_cb=self._handle_connect_response)
 
-        self._api.register_stream_handler(PacketType.PUPIL_DIAMETER, self._handler_pupil_stream)
-        self._api.set_stream_control(PacketType.PUPIL_DIAMETER, self._rate)
+        self._api.register_stream_handler(PacketType.PUPIL_DIAMETER, self.handler_pupil_stream)
+        self._api.set_stream_control(PacketType.PUPIL_DIAMETER, 10)
 
         # Disallows console output until a Quick Start has been run
         self._allow_output = False
@@ -148,7 +148,9 @@ class Frontend:
 
     def handler_pupil_stream(*data):
         timestamp, right_pupil, left_pupil = data
-
+        print(f'timestamp: {data[0]}')
+        print(f'right diametre: {data[1]}')
+        print(f'left diametre: {data[2]}')
 
                 
                     
