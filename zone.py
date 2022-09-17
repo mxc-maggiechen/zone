@@ -136,17 +136,21 @@ class Frontend:
 
 
             elif event_type == Events.TRACKLOSS_END.value:
+                if Frontend.trackloss_on == [True,True]:
+                    Frontend.trackloss_eyes[args[0]] = (timestamp - Frontend.trackloss_initial_time)
+                    Frontend.trackloss_on[args[0]] = False
 
-                Frontend.trackloss_eyes[args[0]] = (timestamp - Frontend.trackloss_initial_time)
-                Frontend.trackloss[args[0]] = 0
-
-                if 0 in Frontend.trackloss_eyes[args[0]]:
-                    Frontend.duration = Frontend.trackloss[args[0]] - Frontend.trackloss_initial_time
-                    Frontend.duration[args[0]] = 0
+                    if 0 in Frontend.trackloss_eyes[args[0]]:
+                        Frontend.duration = Frontend.trackloss_eyes[args[0]]
                 
-                else: 
-                    Frontend.duration = min(Frontend.trackloss_eyes[0]+ Frontend.trackloss_eyes[1]) - Frontend.trackloss_initial_time
-                    Frontend.duration = [0,0]
+                    else: 
+                        Frontend.duration = min(Frontend.trackloss_eyes[0], Frontend.trackloss_eyes[1])
+        
+                else:
+                    Frontend.trackloss_on = [False,False]
+
+                    
+
 
                 
                 # if args[0]==0:
