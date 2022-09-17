@@ -2,6 +2,7 @@
 ''' Demonstrates how to subscribe to and handle data from gaze and event streams '''
 
 import time
+from turtle import end_fill
 
 import adhawkapi
 import adhawkapi.frontend
@@ -17,6 +18,9 @@ class Frontend:
     eye_closed_time = 0
     eye_was_closed = False
     duration = 0
+
+    total_blink_time =0
+    num_blinks =0
 
     def __init__(self):
         # Instantiate an API object
@@ -98,6 +102,11 @@ class Frontend:
             if event_type == Events.BLINK.value:
                 blink_str = args[0]
                 print(f'Blink duration in ms: + {blink_str}')
+                Frontend.num_blinks+=1
+                Frontend.total_blink_time+=args[0]
+                print(f'total number of blinks {Frontend.num_blinks}')
+                print(f'total time blinked {Frontend.total_blink_time}')
+                
 
                 #args[0] is duration in ms
                 
@@ -215,8 +224,16 @@ def main():
         # should also perform a calibration before using gaze data.
         frontend.quickstart()
 
+
+        counter =0
         while True:
-            # Loops while the data streams come in
+            counter+=1
+            if(counter>30):
+                #performs analysis
+                counter=0
+                Frontend.total_blink_time=0
+                Frontend.num_blinks=0
+
             time.sleep(1)
     except (KeyboardInterrupt, SystemExit):
 
