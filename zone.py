@@ -12,8 +12,7 @@ class Frontend:
     ''' Frontend communicating with the backend '''
 
     trackloss_initial_time = 0
-    trackloss_on_left = False
-    trackloss_on_right = False
+    trackloss_on = [False,False]
     eye_closed_time = 0
     eye_was_closed = False
 
@@ -117,19 +116,22 @@ class Frontend:
 
 
             if event_type == Events.TRACKLOSS_START.value:
+                Frontend.trackloss_on[args[0]] = True
 
-                 Frontend.trackloss_initial_time = timestamp
-                 if Frontend
-                 Frontend.trackloss_on = True
+                if Frontend.trackloss_on == [True,True]:
+                    Frontend.trackloss_initial_time = timestamp
             
             if event_type == Events.TRACKLOSS_END.value:
-                 if Frontend.trackloss_on_right == True:
-                    duration = timestamp - Frontend.trackloss_initial_time
-                    if args[0]==0:
-                        print(f'right trackloss duration was {duration}')
-                    else:
-                        print(f'left trackloss duration was {duration}')
+                Frontend.trackloss_on[args[0]] = False
 
+                duration = timestamp - Frontend.trackloss_initial_time
+
+                
+                if args[0]==0:
+                    print(f'right trackloss duration was {duration}')
+                else:
+                    print(f'left trackloss duration was {duration}')
+                
                     
                     
 

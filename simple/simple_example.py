@@ -85,6 +85,9 @@ class Frontend:
                 print('Blink!')
             elif event_type == Events.SACCADE.value:
                 print('Saccade!')
+            
+            
+
 
     def _handle_connect_response(self, error):
         ''' Handler for backend connections '''
