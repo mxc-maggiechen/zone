@@ -15,6 +15,10 @@ class Frontend:
     trackloss_on = [False,False]
     eye_closed_time = 0
     eye_was_closed = False
+    timeR =0
+    timeL =0
+    right_duration = 0
+    left_duration = 0
 
     def __init__(self):
         # Instantiate an API object
@@ -31,6 +35,9 @@ class Frontend:
         # Start the api and set its connection callback to self._handle_connect_response. When the api detects a
         # connection to a MindLink, this function will be run.
         self._api.start(connect_cb=self._handle_connect_response)
+
+        self._api.register_stream_handler(PacketType.PUPIL_DIAMETER, self._handler_pupil_stream)
+        self._api.set_stream_control(PacketType.PUPIL_DIAMETER, self._rate)
 
         # Disallows console output until a Quick Start has been run
         self._allow_output = False
@@ -91,7 +98,6 @@ class Frontend:
 
             # We discriminate between events based on their type
             if event_type == Events.BLINK.value:
-                print('Blink!')
                 blink_str = args[0]
                 print(f'Blink duration in ms: + {blink_str}')
 
@@ -99,8 +105,10 @@ class Frontend:
                 
 
 
-            # elif event_type == Events.SACCADE.value:
+            elif event_type == Events.SACCADE.value:
             #     print('Saccade!')
+                print(f'Saccade duration: {args[0]}')
+                print(f'Saccade amp: {args[1]}')
 
             # if event_type == Events.EYE_CLOSED.value:
             #     #print('Eye closed!')
@@ -115,22 +123,33 @@ class Frontend:
             #         Frontend.eye_was_closed = False
 
 
-            if event_type == Events.TRACKLOSS_START.value:
+            elif event_type == Events.TRACKLOSS_START.value:
                 Frontend.trackloss_on[args[0]] = True
 
                 if Frontend.trackloss_on == [True,True]:
                     Frontend.trackloss_initial_time = timestamp
             
-            if event_type == Events.TRACKLOSS_END.value:
-                Frontend.trackloss_on[args[0]] = False
+            elif event_type == Events.TRACKLOSS_END.value:
+                pass
+                # Frontend.trackloss_on[args[0]] != [True,True]
 
-                duration = timestamp - Frontend.trackloss_initial_time
+                # Frontend.right_duration = timestamp - Frontend.trackloss_initial_time
 
-                
-                if args[0]==0:
-                    print(f'right trackloss duration was {duration}')
-                else:
-                    print(f'left trackloss duration was {duration}')
+                # Frontend.left_duration = 
+
+                # if Frontend.trackloss_on[0]!= Frontend.trackloss_on[1]:
+
+                #if args[0]==0:
+                #=     right_duration = timestamp - Frontend.trackloss_initial_time
+                #     print(f'right trackloss duration was {duration}')
+                # else:
+                #     print(f'left trackloss duration was {duration}')
+            
+
+    def handler_pupil_stream(*data):
+        timestamp, right_pupil, left_pupil = data
+
+
                 
                     
                     
