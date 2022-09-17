@@ -13,12 +13,10 @@ class Frontend:
 
     trackloss_initial_time = 0
     trackloss_on = [False,False]
+    trackloss_eyes = [0,0]
     eye_closed_time = 0
     eye_was_closed = False
-    timeR =0
-    timeL =0
-    right_duration = 0
-    left_duration = 0
+    duration = 0
 
     def __init__(self):
         # Instantiate an API object
@@ -37,7 +35,7 @@ class Frontend:
         self._api.start(connect_cb=self._handle_connect_response)
 
         self._api.register_stream_handler(PacketType.PUPIL_DIAMETER, self.handler_pupil_stream)
-        self._api.set_stream_control(PacketType.PUPIL_DIAMETER, 10)
+        
 
         # Disallows console output until a Quick Start has been run
         self._allow_output = False
@@ -104,7 +102,6 @@ class Frontend:
                 #args[0] is duration in ms
                 
 
-
             elif event_type == Events.SACCADE.value:
             #     print('Saccade!')
                 print(f'Saccade duration: {args[0]}')
@@ -122,39 +119,56 @@ class Frontend:
             #         #print(f'Eye was closed for: + {duration}')
             #         Frontend.eye_was_closed = False
 
-
             elif event_type == Events.TRACKLOSS_START.value:
                 Frontend.trackloss_on[args[0]] = True
 
                 if Frontend.trackloss_on == [True,True]:
                     Frontend.trackloss_initial_time = timestamp
+
+
+            # if event_type == Events.TRACKLOSS_END.value:
+            #     Frontend.trackloss_on[args[0]] = False
             
             elif event_type == Events.TRACKLOSS_END.value:
-                pass
-                # Frontend.trackloss_on[args[0]] != [True,True]
 
-                # Frontend.right_duration = timestamp - Frontend.trackloss_initial_time
+                Frontend.trackloss_eyes[args[0]] = (timestamp - Frontend.trackloss_initial_time)
+                Frontend.trackloss_initial_time[args[0]] = False
 
-                # Frontend.left_duration = 
-
-                # if Frontend.trackloss_on[0]!= Frontend.trackloss_on[1]:
-
-                #if args[0]==0:
-                #=     right_duration = timestamp - Frontend.trackloss_initial_time
-                #     print(f'right trackloss duration was {duration}')
-                # else:
-                #     print(f'left trackloss duration was {duration}')
-            
-
-    def handler_pupil_stream(*data):
-        timestamp, right_pupil, left_pupil = data
-        print(f'timestamp: {data[0]}')
-        print(f'right diametre: {data[1]}')
-        print(f'left diametre: {data[2]}')
+                if 0 in Frontend.trackloss_eyes[args[0]]:
+                    Frontend.duration = Frontend.trackloss[args[0]] - Frontend.trackloss_initial_time
+                    Frontend.duration[args[0]] = 0
+                
+                else: 
+                    Frontend.duration = min(Frontend.trackloss_eyes[0]+ Frontend.trackloss_eyes[1]) - Frontend.trackloss_initial_time
+                    Frontend.duration = [0,0]
 
                 
-                    
-                    
+                # if args[0]==0:
+                #     right_duration = timestamp - Frontend.trackloss_initial_time
+                #     print(f'right trackloss duration was {right_duration}')
+                # else:
+                #     left_duration = timestamp - Frontend.trackloss_initial_time
+                #     print(f'left trackloss duration was {left_duration}')
+                
+                # if Frontend.trackloss_on == [False,False]:
+                #     Frontend.total_duration = (right_duration+left_duration)/2
+                #     print(f'average trackloss duration was {Frontend.total_duration}')
+                
+
+            
+
+    def handler_pupil_stream(self, timestamp, *data):
+        right_pupil, left_pupil = data
+
+        if self._last_console_print and timestamp < self._last_console_print + 1:
+            return
+
+        if self._allow_output:
+            self._last_console_print = timestamp
+            print(f'right diametre: {data[0]}')
+            print(f'left diametre: {data[1]}')
+
+        
 
 
     def _handle_connect_response(self, error):
@@ -173,14 +187,11 @@ class Frontend:
             self._api.set_event_control(adhawkapi.EventControlBit.SACCADE, 1, callback=(lambda *_args: None))
             self._api.set_event_control(adhawkapi.EventControlBit.EYE_CLOSE_OPEN, 1, callback=(lambda *_args: None))
             self._api.set_event_control(adhawkapi.EventControlBit.TRACKLOSS_START_END, 1, callback=(lambda *_args: None))
-
-
-
+            self._api.set_stream_control(PacketType.PUPIL_DIAMETER, 1, callback=(lambda *_args: None) )
             # Starts the MindLink's camera so that a Quick Start can be performed. Note that we use a camera index of 0
             # here, but your camera index may be different, depending on your setup. On windows, it should be 0.
             self._api.start_camera_capture(camera_index=0, resolution_index=adhawkapi.CameraResolution.MEDIUM,
                                            correct_distortion=False, callback=(lambda *_args: None))
-
             # Starts a logging session which saves eye tracking signals. This can be very useful for troubleshooting
             self._api.start_log_session(log_mode=adhawkapi.LogMode.BASIC, callback=lambda *args: None)
 
