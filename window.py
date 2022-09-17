@@ -24,7 +24,7 @@ class tkinterApp(tk.Tk):
   
         # iterating through a tuple consisting
         # of the different page layouts
-        for F in (StartPage, Login, Signup):
+        for F in (StartPage, Login, Signup, Menu, Contact, Setup, Shift):
   
             frame = F(container, self)
   
@@ -43,7 +43,7 @@ class tkinterApp(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
   
-# first window frame startpage
+# Start page
   
 class StartPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -75,7 +75,7 @@ class StartPage(tk.Frame):
           
   
   
-# second window frame page1
+# Login page
 class Login(tk.Frame):
      
     def __init__(self, parent, controller):
@@ -94,7 +94,7 @@ class Login(tk.Frame):
         entry1.grid(row=2, column = 1, padx = 0, pady = 5)
 
         button2 = ttk.Button(self, text ="Submit",
-                            command = lambda : controller.show_frame(StartPage))
+                            command = lambda : controller.show_frame(Menu))
         button2.grid(row = 3, column = 1, padx = 0, pady = 5)
 
         button1 = ttk.Button(self, text ="Back",
@@ -105,7 +105,7 @@ class Login(tk.Frame):
   
   
   
-# third window frame page2
+# Signup page
 class Signup(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -115,20 +115,84 @@ class Signup(tk.Frame):
         # button to show frame 2 with text
         # layout2
      
-        label1 = ttk.Label(self, text='Type in your Email:')
-        label1.grid(row = 1, column = 1, padx = 120, pady = 5)
+        label1 = ttk.Label(self, text='Type in your phone number:')
+        label1.grid(row = 1, column = 1, padx = 0, pady = 5)
 
         entry1 = tk.Entry (self)
         entry1.grid(row=2, column = 1, padx = 0, pady = 5)
 
         button2 = ttk.Button(self, text ="Submit",
-                            command = lambda : controller.show_frame(StartPage))
-        button2.grid(row = 3, column = 1, padx = 0, pady = 5)
+                            command = lambda : controller.show_frame(Setup))
+        button2.grid(row = 3, column = 1, padx = 120, pady = 5)
 
         button1 = ttk.Button(self, text ="Back",
                             command = lambda : controller.show_frame(StartPage))
         button1.grid(row = 4, column = 1, padx = 120, pady = 10)
-  
+
+# Menu page
+class Menu(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = ttk.Label(self, text ="Menu", font = LARGEFONT)
+        label.grid(row = 0, column = 1, padx = 0, pady = 10)
+
+        button1 = ttk.Button(self, text ="Backup Contact",
+                            command = lambda : controller.show_frame(Contact))
+        button1.grid(row = 1, column = 1, padx = 90, pady = 10)
+
+        button2 = ttk.Button(self, text ="Start shift",
+                            command = lambda : controller.show_frame(Shift))
+        button2.grid(row = 2, column = 1, padx = 0, pady = 10)
+
+        button3 = ttk.Button(self, text ="Update baseline",
+                            command = lambda : controller.show_frame(Setup))
+        button3.grid(row = 3, column = 1, padx = 120, pady = 10)
+
+
+# Contact page
+class Contact(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        label = ttk.Label(self, text ="Contact Method", font = ("Verdana", 27))
+        label.grid(row = 0, column = 1, padx = 20, pady = 10)
+        # label.pack(padx = 3, pady = 10)
+
+        label1 = ttk.Label(self, text='Email:')
+        label1.grid(row = 1, column = 1, padx = 90, pady = (5,0))
+
+        entry1 = tk.Entry (self)
+        entry1.grid(row=2, column = 1, padx = 10, pady = (0,5))
+
+        label2 = ttk.Label(self, text='Number:')
+        label2.grid(row = 3, column = 1, padx = 90, pady = (5,0))
+
+        entry2 = tk.Entry (self)
+        entry2.grid(row=4, column = 1, padx = 10, pady = (0,5))
+
+        button2 = ttk.Button(self, text ="Submit",
+                            command = lambda : controller.show_frame(Menu))
+        button2.grid(row = 5, column = 1, padx = 0, pady = 5)
+
+# Setup
+class Setup(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        label = ttk.Label(self, text ="Setting up...", font = ("Verdana", 27))
+        label.grid(row = 0, column = 1, padx = 20, pady = 10)
+
+        button = ttk.Button(self, text ="Quit",
+                            command = lambda : controller.show_frame(Menu))
+        button.grid(row = 5, column = 1, padx = 0, pady = (100, 5))
+
+# Shift
+class Shift(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        label = ttk.Label(self, text ="Starting shift...", font = ("Verdana", 27))
+        label.grid(row = 0, column = 1, padx = 20, pady = (10, 200))
   
 # Driver Code
 app = tkinterApp()
