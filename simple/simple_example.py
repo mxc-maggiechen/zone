@@ -1,3 +1,4 @@
+
 ''' Demonstrates how to subscribe to and handle data from gaze and event streams '''
 
 import time
@@ -9,6 +10,12 @@ from adhawkapi import Events, MarkerSequenceMode, PacketType
 
 class Frontend:
     ''' Frontend communicating with the backend '''
+
+    trackloss_initial_time = 0
+    trackloss_on_left = False
+    trackloss_on_right = False
+    eye_closed_time = 0
+    eye_was_closed = False
 
     def __init__(self):
         # Instantiate an API object
@@ -34,6 +41,8 @@ class Frontend:
 
         # Flags the frontend as not connected yet
         self.connected = False
+
+
         print('Starting frontend...')
 
     def shutdown(self):
@@ -67,26 +76,69 @@ class Frontend:
             return
 
 
-        if self._allow_output:
-            self._last_console_print = timestamp
-            print(f'Gaze data\n'
-                  f'Time since connection:\t{timestamp}\n'
-                  f'X coordinate:\t\t{x_pos}\n'
-                  f'Y coordinate:\t\t{y_pos}\n'
-                  f'Z coordinate:\t\t{z_pos}\n'
-                  f'Vergence angle:\t\t{vergence}\n')
+        # if self._allow_output:
+        #     self._last_console_print = timestamp
+        #     print(f'Gaze data\n'
+        #           f'Time since connection:\t{timestamp}\n'
+        #           f'X coordinate:\t\t{x_pos}\n'
+        #           f'Y coordinate:\t\t{y_pos}\n'
+        #           f'Z coordinate:\t\t{z_pos}\n'
+        #           f'Vergence angle:\t\t{vergence}\n')
 
-    def _handle_event_stream(self, event_type, _timestamp, *_args):
+
+    def _handle_event_stream(self, event_type, timestamp, *args):
         ''' Prints event data to the console '''
         if self._allow_output:
 
             # We discriminate between events based on their type
             if event_type == Events.BLINK.value:
                 print('Blink!')
+<<<<<<< Updated upstream
             elif event_type == Events.SACCADE.value:
                 print('Saccade!')
             
             
+=======
+                blink_str = args[0]
+                print(f'Blink duration in ms: + {blink_str}')
+
+                #args[0] is duration in ms
+                
+
+
+            # elif event_type == Events.SACCADE.value:
+            #     print('Saccade!')
+
+            # if event_type == Events.EYE_CLOSED.value:
+            #     #print('Eye closed!')
+            #     Frontend.eye_closed_time = timestamp
+            #     Frontend.eye_was_closed = True
+
+            # if event_type == Events.EYE_OPENED.value:
+            #     #print('Eye opened!')
+            #     if Frontend.eye_was_closed:
+            #         duration = timestamp - Frontend.eye_closed_time
+            #         #print(f'Eye was closed for: + {duration}')
+            #         Frontend.eye_was_closed = False
+
+
+            if event_type == Events.TRACKLOSS_START.value:
+
+                 Frontend.trackloss_initial_time = timestamp
+                 if Frontend:
+                    Frontend.trackloss_on = True
+            
+            if event_type == Events.TRACKLOSS_END.value:
+                 if Frontend.trackloss_on_right == True:
+                    duration = timestamp - Frontend.trackloss_initial_time
+                    if args[0]==0:
+                        print(f'right trackloss duration was {duration}')
+                    else:
+                        print(f'left trackloss duration was {duration}')
+
+                    
+                    
+>>>>>>> Stashed changes
 
 
     def _handle_connect_response(self, error):
@@ -103,6 +155,10 @@ class Frontend:
             # SACCADE data streams.
             self._api.set_event_control(adhawkapi.EventControlBit.BLINK, 1, callback=(lambda *_args: None))
             self._api.set_event_control(adhawkapi.EventControlBit.SACCADE, 1, callback=(lambda *_args: None))
+            self._api.set_event_control(adhawkapi.EventControlBit.EYE_CLOSE_OPEN, 1, callback=(lambda *_args: None))
+            self._api.set_event_control(adhawkapi.EventControlBit.TRACKLOSS_START_END, 1, callback=(lambda *_args: None))
+
+
 
             # Starts the MindLink's camera so that a Quick Start can be performed. Note that we use a camera index of 0
             # here, but your camera index may be different, depending on your setup. On windows, it should be 0.
