@@ -2,12 +2,15 @@
 ''' Demonstrates how to subscribe to and handle data from gaze and event streams '''
 import math
 import time
+import tkinter
+from tkinter.tix import IMAGETEXT
 from turtle import end_fill
 import csv
 
 import adhawkapi
 import adhawkapi.frontend
 from adhawkapi import Events, MarkerSequenceMode, PacketType
+from PIL import Image, ImageTk
 
 from tkinter import *
 
@@ -378,12 +381,21 @@ def main(phone):
         frontend.quickstart()
         # time.sleep(3)
         window=Tk()
-        lbl=Label(window, text="Please wait...", fg='red', font=("Helvetica", 16))
+        lbl=Label(window, text="Please wait...", fg='black', font=("Helvetica", 16))
         lbl.place(x=300, y=325, anchor = 'center')
-        window.title('Hello Python')
+        window.title('Zone Eye Scanning')
         window.geometry("600x750")
         print('0987654321')
 
+        # Create a photoimage object of the image in the path
+        # image1 = Image.open("bg2.png")
+        # test = ImageTk.PhotoImage(image1)
+
+        # label1 = tkinter.Label(image=test)
+        # label1.image = test
+
+        # # Position image
+        # label1.place(x=0, y=0, width=600, height=750)
         
         print('1234567890')
 
@@ -405,9 +417,12 @@ def main(phone):
                     print('bruh bruh bruh bruhb rbuhr buhr ubh ru bhr')
                     if(Frontend.blink_analysis()==False):
                         lbl['text']='NOT FIT TO WORK DUE TO BLINK'
+                        lbl['fg']='red'
                         print('NOT FIT TO WORK DUE TO BLINK')
                     else:
                         lbl['text']='FIT TO WORK'
+                        lbl['fg']='black'
+
                         print('FIT TO WORK')
                 blink_counter=0
                 Frontend.total_blink_time=0
