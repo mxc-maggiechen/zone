@@ -218,7 +218,7 @@ class Frontend:
         
 
 
-        - 10th percentile
+        # - 10th percentile
 
         push_baseline_file = open("zone_data","w")
         #store to csv
@@ -237,7 +237,6 @@ class Frontend:
 
 
         
-
 
 
     def analysis():
