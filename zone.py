@@ -23,6 +23,7 @@ class Frontend:
     TRACKLOSS_TIME_ELAPSED=30
     TRACKLOSS_MAX=0.8
 
+    creating_baseline = False:
 
 
     trackloss_initial_time = 0
@@ -31,6 +32,7 @@ class Frontend:
     eye_closed_time = 0
     eye_was_closed = False
     fixated_time = 0
+
 
 
     #analysis stuff
@@ -52,6 +54,7 @@ class Frontend:
     dfix_average=0
 
     num_trackloss=0
+    
 
     dblinklist = []
     dfixlist=[]
@@ -263,7 +266,6 @@ class Frontend:
 
 
 
-        
 
 
     def analysis():
