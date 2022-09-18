@@ -384,7 +384,7 @@ class Frontend:
         print(f"previous average dfix is {Frontend.prev_dfix_average}")
         
 
-        # if(Frontend.prev_dfix_average!=0 and Frontend.dfix_average/Frontend.prev_dfix_average > 3):
+        # if(Frontend.prev_dfix_average!=0 and Frontend.dfix_average/Frontend.prev_dfix_average > 3) or (Frontend.dfix_average < Frontend.min_fixation):
         #     return False
         # else:
         #     return True
