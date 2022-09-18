@@ -12,17 +12,30 @@ from adhawkapi import Events, MarkerSequenceMode, PacketType
 
 class Frontend:
     ''' Frontend communicating with the backend '''
-    BLINK_DATAPOINTS=30
-    BLINK_TIME_ELAPSED=30
+    # BLINK_DATAPOINTS=30
+    # BLINK_TIME_ELAPSED=30
 
-    FIX_DATAPOINTS=20
-    FIX_TIME_ELAPSED=90
+    # FIX_DATAPOINTS=20
+    # FIX_TIME_ELAPSED=90
 
-    #if trackloss exceeds a value over 5 times in 30s, unemployment
-    TRACKLOSS_DATAPOINTS=10 #the amount of times youre allowed to go over max
-    TRACKLOSS_TIME_ELAPSED=900
-    TRACKLOSS_MAX= 5
-    TRACKLOSS_SLEEP = 120
+    # #if trackloss exceeds a value over 5 times in 30s, unemployment
+    # TRACKLOSS_DATAPOINTS=10 #the amount of times youre allowed to go over max
+    # TRACKLOSS_TIME_ELAPSED=900
+    # TRACKLOSS_MAX= 5
+    # TRACKLOSS_SLEEP = 120
+
+    BLINK_DATAPOINTS=5
+    BLINK_TIME_ELAPSED=10
+
+    FIX_DATAPOINTS=5
+    FIX_TIME_ELAPSED=10
+
+    #if trackloss exceeds a value over 
+    # 5 times in 30s, unemployment
+    TRACKLOSS_DATAPOINTS=5 #the amount of times youre allowed to go over max
+    TRACKLOSS_TIME_ELAPSED=100
+    TRACKLOSS_MAX= 3
+    TRACKLOSS_SLEEP = 20
 
     trackloss_initial_time = 0
     trackloss_on = [False,False]
@@ -136,7 +149,7 @@ class Frontend:
 
             # We discriminate between events based on their type
             if event_type == Events.BLINK.value:
-                # print(f'Blink duration in ms: + {args[0]}')
+                print(f'Blink duration in ms: + {args[0]}')
                 Frontend.num_blinks+=1
                 Frontend.total_blink_time+=args[0]
                 #args[0] is duration in ms
@@ -144,7 +157,7 @@ class Frontend:
 
             elif event_type == Events.SACCADE.value:
                 Frontend.fixated_time = timestamp - Frontend.fixated_time - args[1]
-                print(f'Fixated time: {Frontend.fixated_time}')
+                # print(f'Fixated time: {Frontend.fixated_time}')
 
                 if(Frontend.fixated_time>Frontend.TRACKLOSS_SLEEP):
                     Frontend.sleep=True
@@ -152,8 +165,8 @@ class Frontend:
                     Frontend.total_fixation_time+=Frontend.fixated_time
                     Frontend.num_fixation+=1
 
-                print(f'NUMBER OF FIXATIONS: {Frontend.num_fixation}')
-                print(f'SUM OF FIXATIONS: {Frontend.total_fixation_time}')
+                # print(f'NUMBER OF FIXATIONS: {Frontend.num_fixation}')
+                # print(f'SUM OF FIXATIONS: {Frontend.total_fixation_time}')
 
                 # print(f'Saccade duration: {args[0]}')
                 # print(f'Saccade amp: {args[1]}')
@@ -289,7 +302,7 @@ class Frontend:
         print(f"Average dblink is {Frontend.dblink_average}")
         print(f"previous average dblink is {Frontend.prev_dblink_average}")
 
-        if(Frontend.dblink_average/Frontend.prev_dlink_average > 1.5):
+        if(Frontend.prev_dblink_average!=0 and Frontend.dblink_average/Frontend.prev_dblink_average > 1.5):
             return False
         else:
             return True
@@ -331,15 +344,16 @@ class Frontend:
         print(f"Sum dfix is {Frontend.dfix_sum}")
         print(f"Average dfix is {Frontend.dfix_average}")
         print(f"previous average dfix is {Frontend.prev_dfix_average}")
+        
 
-        if(Frontend.dfix_average/Frontend.prev_dfix_average > 3):
-            return False
-        else:
-            return True
+        # if(Frontend.prev_dfix_average!=0 and Frontend.dfix_average/Frontend.prev_dfix_average > 3):
+        #     return False
+        # else:
+        #     return True
 
-def track_loss_analysis():
+# def track_loss_analysis():
     
-    return Frontend.num_trackloss<Frontend.TRACKLOSS_DATAPOINTS
+#     return Frontend.num_trackloss<Frontend.TRACKLOSS_DATAPOINTS
 
 
         
@@ -370,34 +384,34 @@ def main():
             fixation_counter+=1
             trackloss_counter+=1
 
-            print(f'fixation count = {fixation_counter}')
             if(blink_counter>Frontend.BLINK_DATAPOINTS):
-                #performs analysis HAVE ANALYSIS RETURNS A TRUE OR FALSE
-                if(Frontend.num_blinks!=0 and Frontend.blink_analysis()==False):
-                    print('NOT FIT TO WORK DUE TO BLINK')
-                    frontend.shutdown()
-
+                if(Frontend.num_blinks!=0):
+                    if(Frontend.blink_analysis()==False):
+                        print('NOT FIT TO WORK DUE TO BLINK')
+                    else:
+                        print('FIT TO WORK')
                 blink_counter=0
                 Frontend.total_blink_time=0
                 Frontend.num_blinks=0
 
-            if(fixation_counter>Frontend.FIX_DATAPOINTS):
-                if(Frontend.sleep==True):
-                    frontend.shutdown()
-                elif(Frontend.num_fixation!=0 and Frontend.fixation_analysis()==False):
-                    print('NOT FIT TO WORK DUE TO FIXATION')
-                    frontend.shutdown()
-                fixation_counter=0
-                Frontend.total_fixation_time=0
-                Frontend.num_fixation=0
+            # if(fixation_counter>Frontend.FIX_DATAPOINTS):
+            #     if(Frontend.sleep==True):
+            #         frontend.shutdown()
+            #     elif(Frontend.num_fixation!=0):
+            #         Frontend.fixation_analysis()
+            #         print('NOT FIT TO WORK DUE TO FIXATION')
+            #         frontend.shutdown()
+            #     fixation_counter=0
+            #     Frontend.total_fixation_time=0
+            #     Frontend.num_fixation=0
 
-            if track_loss_analysis() == False:
-                print('NOT FIT TO WORK DUE TO TRACKLOSS')
-                frontend.shutdown()
-            elif(trackloss_counter>Frontend.TRACKLOSS_TIME_ELAPSED):
-                trackloss_counter=0
-                
-                Frontend.num_trackloss=0
+            # if track_loss_analysis() == False:
+            #     print('NOT FIT TO WORK DUE TO TRACKLOSS')
+            #     frontend.shutdown()
+            # elif(trackloss_counter>Frontend.TRACKLOSS_TIME_ELAPSED):
+            #     trackloss_counter=0
+
+            #     Frontend.num_trackloss=0
 
             time.sleep(1)
     except (KeyboardInterrupt, SystemExit):
