@@ -414,16 +414,12 @@ def main(phone):
 
         while True:
             window.update()
-            # print('yahooooooooooo')
             blink_counter+=1
             fixation_counter+=1
             trackloss_counter+=1
-            # print('hahahahahahaha')
             # print(f'blink_counter is {blink_counter}')
             if(blink_counter>Frontend.BLINK_DATAPOINTS):
-                print('asdf asdf l;kj ;lkj')
                 if(Frontend.num_blinks!=0):
-                    print('bruh bruh bruh bruhb rbuhr buhr ubh ru bhr')
                     if(Frontend.blink_analysis()==False):
                         lbl['text']='NOT FIT TO WORK DUE TO BLINK'
                         lbl['fg']='red'

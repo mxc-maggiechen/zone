@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import *
 from tkinter.tix import IMAGETEXT
+from turtle import bgcolor
 import customtkinter
 import zone;
 from PIL import Image, ImageTk
@@ -83,7 +84,7 @@ class StartPage(tk.Frame):
         img5 = ImageTk.PhotoImage(Image.open('logoorng.png').resize((340, 100), Image.ANTIALIAS))
         lbl5 = tk.Label(self, image=img5)
         lbl5.img15 = img5  # Keep a reference in case this code put is in a function.
-        lbl5.place(relx=0.5, rely=0.5, anchor='center')  # Place label in center of parent.
+        lbl5.place(x=window_width/2, y=355, anchor='center')  # Place label in center of parent.
 
         button1 = customtkinter.CTkButton(self, text ="Log in", text_font = MIDFONT, fg_color=DARK_BLUE, text_color=BG_COLOR,
         command = lambda : controller.show_frame(Login))
@@ -91,7 +92,7 @@ class StartPage(tk.Frame):
         # putting the button in its place by
         # using grid
         # button1.grid(row = 1, column = 1, padx = 120, pady = (100, 10))
-        button1.place(x=window_width/2, y=500, anchor="center")
+        button1.place(x=window_width/2, y=460, anchor="center")
 
         ## button to show frame 2 with text layout2
         button2 = customtkinter.CTkButton(self, text ="Sign up", text_font = MIDFONT, fg_color=DARK_BLUE, text_color=BG_COLOR,
@@ -99,7 +100,7 @@ class StartPage(tk.Frame):
      
         # putting the button in its place by
         # using grid
-        button2.place(x=window_width/2, y=550, anchor="center")
+        button2.place(x=window_width/2, y=510, anchor="center")
           
   
   
@@ -115,7 +116,7 @@ class Login(tk.Frame):
         lbl.img = img  # Keep a reference in case this code put is in a function.
         lbl.place(relx=0.5, rely=0.5, anchor='center')  # Place label in center of parent.
 
-        label = customtkinter.CTkLabel(self, text ="Log in", text_font = LARGEFONT)
+        label = customtkinter.CTkLabel(self, text ="Log in", text_font = LARGEFONT, bg_color = BG_COLOR)
         label.grid(row = 0, column = 1, padx = 0, pady = 10)
         label.place(x=window_width/2, y=200, anchor="center")
 
@@ -123,7 +124,7 @@ class Login(tk.Frame):
         # button to show frame 2 with text
         # layout2
      
-        label1 = customtkinter.CTkLabel(self, text='Type in your code:', text_font = MIDFONT, anchor='center')
+        label1 = customtkinter.CTkLabel(self, text='Type in your code:', text_font = MIDFONT, anchor='center', bg_color = BG_COLOR)
         label1.place(x=window_width/2-80, anchor="center", y=335)
 
         entry1 = customtkinter.CTkEntry (self, text_font = MIDFONT)
@@ -151,13 +152,13 @@ class Signup(tk.Frame):
         lbl.img = img  # Keep a reference in case this code put is in a function.
         lbl.place(relx=0.5, rely=0.5, anchor='center')  # Place label in center of parent.
 
-        label = customtkinter.CTkLabel(self, text ="Sign up", text_font = LARGEFONT)
+        label = customtkinter.CTkLabel(self, text ="Sign up", text_font = LARGEFONT, bg_color = BG_COLOR)
         label.place(x=window_width/2, y=200, anchor="center")
   
         # button to show frame 2 with text
         # layout2
      
-        label1 = customtkinter.CTkLabel(self, text='Type in your phone number:', text_font=MIDFONT)
+        label1 = customtkinter.CTkLabel(self, text='Type in your phone number:', text_font=MIDFONT, bg_color = BG_COLOR)
         label1.place(x=window_width/2, y=300, anchor="center")
 
         entry1 = customtkinter.CTkEntry (self, text_font=MIDFONT, width=500)
@@ -181,7 +182,7 @@ class Menu(tk.Frame):
         lbl.img = img  # Keep a reference in case this code put is in a function.
         lbl.place(relx=0.5, rely=0.5, anchor='center')  # Place label in center of parent.
 
-        label = customtkinter.CTkLabel(self, text ="Menu", text_font = LARGEFONT)
+        label = customtkinter.CTkLabel(self, text ="Menu", text_font = LARGEFONT, bg_color = BG_COLOR)
         label.place(x=window_width/2, y=200, anchor="center")
 
         button1 = customtkinter.CTkButton(self, text ="Backup Contact", text_font = MIDFONT, fg_color=DARK_BLUE, text_color=BG_COLOR,
@@ -196,6 +197,10 @@ class Menu(tk.Frame):
                             command = lambda : controller.show_frame(Setup))
         button3.place(x=window_width/2, y=510, anchor="center")
 
+def submitphone(self, parent, controller, value):
+    phone=value
+    controller.show_frame(Menu)
+    
 
 # Contact page
 class Contact(tk.Frame):
@@ -208,24 +213,24 @@ class Contact(tk.Frame):
         lbl.place(relx=0.5, rely=0.5, anchor='center')  # Place label in center of parent.
 
 
-        label = customtkinter.CTkLabel(self, text ="Contact Method", text_font = LARGEFONT)
+        label = customtkinter.CTkLabel(self, text ="Contact Method", text_font = LARGEFONT, bg_color = BG_COLOR)
         label.place(x=window_width/2, y=200, anchor = "center")
 
-        label1 = customtkinter.CTkLabel(self, text='Email:', text_font = MIDFONT)
+        label1 = customtkinter.CTkLabel(self, text='Email:', text_font = MIDFONT, bg_color = BG_COLOR)
         label1.place(x=window_width/2-150, y=330, anchor = "center")
 
         entry1 = customtkinter.CTkEntry (self, text_font = MIDFONT, width = 300)
         entry1.place(x=window_width/2+40, y=330, anchor = "center")
 
-        label2 = customtkinter.CTkLabel(self, text='Number:', text_font = MIDFONT)
-        phone = label2.get()
+        label2 = customtkinter.CTkLabel(self, text='Number:', text_font = MIDFONT, bg_color = BG_COLOR)
+        phone = entry1.get()
         label2.place(x=window_width/2-165, y=400, anchor = "center")
 
         entry2 = customtkinter.CTkEntry (self, text_font = MIDFONT, width=300)
         entry2.place(x=window_width/2+40, y=400, anchor = "center")
 
         button2 = customtkinter.CTkButton(self, text ="Submit", text_font = MIDFONT, fg_color=DARK_BLUE, text_color=BG_COLOR,
-                            command = lambda : controller.show_frame(Menu))
+                            command = lambda : submitphone(self, parent, controller, entry2.get()))
         button2.place(x=window_width/2, y=500, anchor = "center")
 
 # Setup
@@ -238,10 +243,10 @@ class Setup(tk.Frame):
         lbl.img = img  # Keep a reference in case this code put is in a function.
         lbl.place(relx=0.5, rely=0.5, anchor='center')  # Place label in center of parent.
 
-        label = customtkinter.CTkLabel(self, text ="Setting up...", text_font = ("Verdana", 27))
+        label = customtkinter.CTkLabel(self, text ="Setting up...", text_font = ("Verdana", 27), bg_color = BG_COLOR)
         label.place(x=window_width/2, y=300, anchor = 'center')
 
-        button = customtkinter.CTkButton(self, text ="Quit",  text_font = MIDFONT, fg_color=DARK_BLUE, text_color=BG_COLOR,
+        button = customtkinter.CTkButton(self, text ="Quit",  text_font = MIDFONT, fg_color=DARK_BLUE, text_color=BG_COLOR, bg_color = BG_COLOR,
                             command = lambda : controller.show_frame(Menu))
         button.place(x=window_width/2, y=400, anchor = 'center')
 
@@ -256,13 +261,13 @@ class Shift(tk.Frame):
         lbl.place(relx=0.5, rely=0.5, anchor='center')  # Place label in center of parent.
 
 
-        label = customtkinter.CTkLabel(self, text ="Plug in your MindLink and", text_font = ("Verdana", 27))
+        label = customtkinter.CTkLabel(self, text ="Plug in your MindLink and", text_font = ("Verdana", 27), bg_color = BG_COLOR)
         label.place(x=window_width/2, y=250, anchor = 'center')
 
-        label = customtkinter.CTkLabel(self, text ="ensure AdHawk Backend", text_font = ("Verdana", 27))
+        label = customtkinter.CTkLabel(self, text ="ensure AdHawk Backend", text_font = ("Verdana", 27), bg_color = BG_COLOR)
         label.place(x=window_width/2, y=300, anchor = 'center')
 
-        label = customtkinter.CTkLabel(self, text ="is running.", text_font = ("Verdana", 27))
+        label = customtkinter.CTkLabel(self, text ="is running.", text_font = ("Verdana", 27), bg_color = BG_COLOR)
         label.place(x=window_width/2, y=350, anchor = 'center')
 
         button = customtkinter.CTkButton(self, text ="Begin", text_font = MIDFONT, fg_color=DARK_BLUE, text_color=BG_COLOR,
@@ -272,10 +277,15 @@ class Shift(tk.Frame):
         button = customtkinter.CTkButton(self, text ="Quit", text_font = MIDFONT, fg_color=DARK_BLUE, text_color=BG_COLOR,
                             command = lambda : controller.show_frame(Menu))
         button.place(x=window_width/2, y=490, anchor = 'center')
+
+        # button = customtkinter.CTkButton(self, text ="show", text_font = MIDFONT, fg_color=DARK_BLUE, text_color=BG_COLOR,
+        #                     command = lambda : print(phone))
+        # button.place(x=window_width/2, y=580, anchor = 'center')
   
 # Driver Code
 app = tkinterApp()
 app.geometry(f'{window_width}x{window_height}')
 app.title= 'Vision'
+app.wm_attributes('-transparentcolor','black')
 # app = customtkinter.CTk()
 app.mainloop()
