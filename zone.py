@@ -318,7 +318,7 @@ class Frontend:
         print(f"Average dblink is {Frontend.dblink_average}")
         print(f"previous average dblink is {Frontend.prev_dblink_average}")
 
-        if(Frontend.prev_dblink_average!=0 and Frontend.dblink_average/Frontend.prev_dblink_average > 1.5):
+        if(Frontend.prev_dblink_average!=0 and Frontend.dblink_average/Frontend.prev_dblink_average > 1.5) or (Frontend.dblink_average < Frontend.min_blink_duration):
             return False
         else:
             return True
@@ -362,7 +362,7 @@ class Frontend:
         print(f"previous average dfix is {Frontend.prev_dfix_average}")
         
 
-        # if(Frontend.prev_dfix_average!=0 and Frontend.dfix_average/Frontend.prev_dfix_average > 3):
+        # if(Frontend.prev_dfix_average!=0 and Frontend.dfix_average/Frontend.prev_dfix_average > 3) or or (Frontend.dfix_average < Frontend.min_fixation):
         #     return False
         # else:
         #     return True
@@ -428,9 +428,9 @@ def main():
                     username = ''.join(random.choice(string.ascii_letters) for i in range(8))
 
                     Frontend.baseline_bool = False
-                    Frontend.min_blink_duration = np.percentile(Frontend.baseline_blink_duration, 20) * 0.7
+                    Frontend.min_blink_duration = np.percentile(Frontend.baseline_blink_duration, 80) * 1.3
                     Frontend.min_blink_frequency = np.percentile(Frontend.baseline_blink_frequency, 20) * 0.7
-                    Frontend.min_fixation = np.percentile(Frontend.baseline_fixation, 20) * 0.7
+                    Frontend.min_fixation = np.percentile(Frontend.baseline_fixation, 80) * 1.3
                     Frontend.min_saccade_peak_velocity = np.percentile(Frontend.baseline_saccade_peak_velocity, 20) * 0.7
                     Frontend.min_trackloss = np.percentile(Frontend.baseline_trackloss, 20) * 0.7
                     Frontend.min_pupil_diameter = np.percentile(Frontend.baseline_pupil_diameter, 20) * 0.7
