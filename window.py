@@ -64,15 +64,21 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        image1 = Image.open("bg1.png")
-        test = ImageTk.PhotoImage(image1)
+        img = ImageTk.PhotoImage(Image.open(
+            'bg1.png').resize((600, 750), Image.ANTIALIAS))
 
-        label1 = tk.Label(image=test)
-        label1.image = test
-         
+
+        lbl = tk.Label(self, image=img)
+        lbl.img = img  # Keep a reference in case this code put is in a function.
+        # Place label in center of parent.
+        lbl.place(relx=0.5, rely=0.5, anchor='center')
+
+        title_img = ImageTk.PhotoImage(Image.open(
+            'logored.png').resize((472, 293), Image.ANTIALIAS))
+        title_lbl = tk.Label(self, image = title_img)
+        title_lbl.place()
         # label of frame Layout 2
-        label = customtkinter.CTkLabel(self, text ="Zone", text_font = ('Mono', 60))
-        label.place(anchor="center", x=window_width/2, y=270)
+        title_lbl.place(anchor="center", x=window_width/2, y=270)
         # putting the grid in its place by using
         # grid
         # label.grid(row = 0, column = 1, padx = 0, pady = 10)

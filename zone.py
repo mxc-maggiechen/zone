@@ -32,6 +32,7 @@ class Frontend:
     fixated_time = 0
 
 
+
     #analysis stuff
     total_blink_time = 0
     num_blinks =0
@@ -52,6 +53,7 @@ class Frontend:
     sleep=False
 
     num_trackloss=0
+    
 
     dblinklist = []
     dfixlist=[]
@@ -260,7 +262,6 @@ class Frontend:
 
 
 
-        
 
 
     def blink_analysis():
