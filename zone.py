@@ -1,6 +1,6 @@
 
 ''' Demonstrates how to subscribe to and handle data from gaze and event streams '''
-
+import math
 import time
 from turtle import end_fill
 import csv
@@ -258,12 +258,6 @@ class Frontend:
         #first row is header
         #first column is 
 
-
-
-
-
-
-
     def blink_analysis():
 
         if Frontend.data_point1==0:
@@ -294,6 +288,13 @@ class Frontend:
         print(f"Sum dblink is {Frontend.dblink_sum}")
         print(f"Average dblink is {Frontend.dblink_average}")
         print(f"previous average dblink is {Frontend.prev_dblink_average}")
+
+        if(Frontend.dblink_average/Frontend.prev_dlink_average > 1.5):
+            return False
+        else:
+            return True
+
+        
 
 
     def fixation_analysis():
@@ -330,6 +331,17 @@ class Frontend:
         print(f"Sum dfix is {Frontend.dfix_sum}")
         print(f"Average dfix is {Frontend.dfix_average}")
         print(f"previous average dfix is {Frontend.prev_dfix_average}")
+
+        if(Frontend.dfix_average/Frontend.prev_dfix_average > 3):
+            return False
+        else:
+            return True
+
+def track_loss_analysis():
+    
+    return Frontend.num_trackloss<Frontend.TRACKLOSS_DATAPOINTS
+
+
         
 
 def main():
@@ -361,28 +373,30 @@ def main():
             print(f'fixation count = {fixation_counter}')
             if(blink_counter>Frontend.BLINK_DATAPOINTS):
                 #performs analysis HAVE ANALYSIS RETURNS A TRUE OR FALSE
-                if(Frontend.num_blinks!=0):
-                    Frontend.blink_analysis()
+                if(Frontend.num_blinks!=0 and Frontend.blink_analysis()==False):
+                    print('NOT FIT TO WORK DUE TO BLINK')
+                    frontend.shutdown()
 
                 blink_counter=0
                 Frontend.total_blink_time=0
                 Frontend.num_blinks=0
 
             if(fixation_counter>Frontend.FIX_DATAPOINTS):
-                print('FIXATION ANALYSIS RUNNING')
                 if(Frontend.sleep==True):
                     frontend.shutdown()
-                elif(Frontend.num_fixation!=0):
-                    Frontend.fixation_analysis()
+                elif(Frontend.num_fixation!=0 and Frontend.fixation_analysis()==False):
+                    print('NOT FIT TO WORK DUE TO FIXATION')
+                    frontend.shutdown()
                 fixation_counter=0
                 Frontend.total_fixation_time=0
                 Frontend.num_fixation=0
 
-            if Frontend.num_trackloss>Frontend.TRACKLOSS_DATAPOINTS:
-                print('trackloss exceeded')
+            if track_loss_analysis() == False:
+                print('NOT FIT TO WORK DUE TO TRACKLOSS')
                 frontend.shutdown()
             elif(trackloss_counter>Frontend.TRACKLOSS_TIME_ELAPSED):
                 trackloss_counter=0
+                
                 Frontend.num_trackloss=0
 
             time.sleep(1)
