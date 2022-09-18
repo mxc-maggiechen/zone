@@ -84,15 +84,21 @@ class StartPage(tk.Frame):
         # Place label in center of parent.
         lbl.place(relx=0.5, rely=0.5, anchor='center')
 
-        title_img = ImageTk.PhotoImage(Image.open(
-            'logored.png').resize((472, 293), Image.ANTIALIAS))
-        title_lbl = tk.Label(self, image = title_img)
-        title_lbl.place()
-        # label of frame Layout 2
-        title_lbl.place(anchor="center", x=window_width/2, y=270)
-        # putting the grid in its place by using
-        # grid
-        # label.grid(row = 0, column = 1, padx = 0, pady = 10)
+        path = "logored.png"
+        img = ImageTk.PhotoImage(Image.open('logored.png').resize((420, 120), Image.ANTIALIAS))
+        panel = Label(self, image=img)
+        panel.photo = img
+        panel.place(width=472, height=293, x=window_width/2, y=270, anchor="center")
+
+        # title_img = ImageTk.PhotoImage(Image.open(
+        #     'logored.png').resize((472, 293), Image.ANTIALIAS))
+        # title_lbl = tk.Label(self, image = title_img)
+        # title_lbl.place()
+        # # label of frame Layout 2
+        # title_lbl.place(anchor="center", x=window_width/2, y=270)
+        # # putting the grid in its place by using
+        # # grid
+        # # label.grid(row = 0, column = 1, padx = 0, pady = 10)
 
         button1 = customtkinter.CTkButton(self, text ="Log in", text_font = MIDFONT,
 
