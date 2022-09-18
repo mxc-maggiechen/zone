@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import customtkinter
 from zone import main;
+from PIL import Image, ImageTk
 
 # main()
 
@@ -13,6 +14,10 @@ window_height = 750
  
 LARGEFONT = ("Mono", 39)
 MIDFONT = ("Mono", 18)
+
+DARK_BLUE = "#003049"
+DARK_PURPLE = "5F0F40"
+BG_COLOR = "EDE6C0"
   
 class tkinterApp(tk.Tk):
      
@@ -58,6 +63,12 @@ class tkinterApp(tk.Tk):
 class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+
+        image1 = Image.open("bg1.png")
+        test = ImageTk.PhotoImage(image1)
+
+        label1 = tk.Label(image=test)
+        label1.image = test
          
         # label of frame Layout 2
         label = customtkinter.CTkLabel(self, text ="Zone", text_font = ('Mono', 60))
@@ -213,8 +224,8 @@ class Shift(tk.Frame):
                             command = lambda : controller.show_frame(Menu))
         button.place(x=window_width/2, y=400, anchor = 'center')
   
-# Driver Code
-app = tkinterApp()
-app.geometry(f'{window_width}x{window_height}')
-# app = customtkinter.CTk()
-app.mainloop()
+# # Driver Code
+# app = tkinterApp()
+# app.geometry(f'{window_width}x{window_height}')
+# # app = customtkinter.CTk()
+# app.mainloop()
