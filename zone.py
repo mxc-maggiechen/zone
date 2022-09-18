@@ -9,6 +9,8 @@ import adhawkapi
 import adhawkapi.frontend
 from adhawkapi import Events, MarkerSequenceMode, PacketType
 
+from tkinter import *
+
 
 class Frontend:
     ''' Frontend communicating with the backend '''
@@ -374,22 +376,38 @@ def main(phone):
         # should also perform a calibration before using gaze data.
         time.sleep(3)
         frontend.quickstart()
+        # time.sleep(3)
+        window=Tk()
+        lbl=Label(window, text="Please wait...", fg='red', font=("Helvetica", 16))
+        lbl.place(x=300, y=325, anchor = 'center')
+        window.title('Hello Python')
+        window.geometry("600x750")
+        print('0987654321')
 
+        
+        print('1234567890')
 
         blink_counter =0
         fixation_counter=0
         trackloss_counter=0
 
         while True:
+            window.update()
+            # print('yahooooooooooo')
             blink_counter+=1
             fixation_counter+=1
             trackloss_counter+=1
-
+            # print('hahahahahahaha')
+            # print(f'blink_counter is {blink_counter}')
             if(blink_counter>Frontend.BLINK_DATAPOINTS):
+                print('asdf asdf l;kj ;lkj')
                 if(Frontend.num_blinks!=0):
+                    print('bruh bruh bruh bruhb rbuhr buhr ubh ru bhr')
                     if(Frontend.blink_analysis()==False):
+                        lbl['text']='NOT FIT TO WORK DUE TO BLINK'
                         print('NOT FIT TO WORK DUE TO BLINK')
                     else:
+                        lbl['text']='FIT TO WORK'
                         print('FIT TO WORK')
                 blink_counter=0
                 Frontend.total_blink_time=0
@@ -413,7 +431,7 @@ def main(phone):
             #     trackloss_counter=0
 
             #     Frontend.num_trackloss=0
-
+            # window.mainloop()
             time.sleep(1)
     except (KeyboardInterrupt, SystemExit):
 
@@ -422,4 +440,4 @@ def main(phone):
 
 
 if __name__ == '__main__':
-    main('window.py')
+    main('1930')
