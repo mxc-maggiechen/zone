@@ -340,7 +340,7 @@ class Frontend:
         print(f"Average dblink is {Frontend.dblink_average}")
         print(f"previous average dblink is {Frontend.prev_dblink_average}")
 
-        if(Frontend.prev_dblink_average!=0 and Frontend.dblink_average/Frontend.prev_dblink_average > 1.5):
+        if(Frontend.prev_dblink_average!=0 and Frontend.dblink_average/Frontend.prev_dblink_average > 1.5) or (Frontend.dblink_average < Frontend.min_blink_duration):
             return False
         else:
             return True
