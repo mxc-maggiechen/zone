@@ -3,6 +3,7 @@
 
 import time
 from turtle import end_fill
+import csv
 
 import adhawkapi
 import adhawkapi.frontend
@@ -13,6 +14,7 @@ class Frontend:
     ''' Frontend communicating with the backend '''
     DATAPOINTS=5
     TIME_ELAPSED=10
+
 
     trackloss_initial_time = 0
     trackloss_on = [False,False]
@@ -198,8 +200,42 @@ class Frontend:
             # Flags the frontend as connected
             self.connected = True
     
-    def baseline(self):
-        # run algorithm
+    def create_baseline(self):
+        total_seconds = 3600
+
+        while total_seconds > 0:
+            
+            #blink duration
+            #blink frequency
+            #fixation duration
+            #saccade peak velocity
+            # eye closure time
+            #pupil dilation range
+
+
+            time.sleep(1)
+            total_seconds-=1
+        
+
+
+        - 10th percentile
+
+        push_baseline_file = open("zone_data","w")
+        #store to csv
+        pass
+
+    
+    def get_baselines(self):
+        with open("zone_data.csv", "r") as data:
+            zone_data = csv.DictReader(data)
+
+        #first row is header
+        #first column is 
+
+
+
+
+
         
 
 
@@ -236,8 +272,6 @@ class Frontend:
         print(f"previous average dblink is {Frontend.prev_dblink_average}")
 
         
-
-
 
 def main():
     '''Main function'''
