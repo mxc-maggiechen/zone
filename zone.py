@@ -11,8 +11,17 @@ from adhawkapi import Events, MarkerSequenceMode, PacketType
 
 class Frontend:
     ''' Frontend communicating with the backend '''
-    DATAPOINTS=5
-    TIME_ELAPSED=10
+    BLINK_DATAPOINTS=5
+    BLINK_TIME_ELAPSED=10
+
+    FIX_DATAPOINTS=2
+    FIX_TIME_ELAPSED=10
+
+    #if trackloss exceeds a value over 5 times in 30s, unemployment
+    TRACKLOSS_DATAPOINTS=2
+    TRACKLOSS_TIME_ELAPSED=30
+    TRACKLOSS_MAX=0.8
+
 
     trackloss_initial_time = 0
     trackloss_on = [False,False]
@@ -21,6 +30,8 @@ class Frontend:
     eye_was_closed = False
     fixated_time = 0
 
+
+    #analysis stuff
     total_blink_time = 0
     num_blinks =0
     dblink_sum =0
@@ -29,8 +40,19 @@ class Frontend:
     prev_dblink_average=0
     dblink_average=0
 
-    blinklist =[]
+
+    total_fixation_time =0
+    num_fixation=0
+    dfix_sum=0
+    fdata_point1=0
+    fdata_point2=0
+    prev_dfix_average=0
+    dfix_average=0
+
+    num_trackloss=0
+
     dblinklist = []
+    dfixlist=[]
 
     def __init__(self):
         # Instantiate an API object
@@ -110,23 +132,23 @@ class Frontend:
 
             # We discriminate between events based on their type
             if event_type == Events.BLINK.value:
-                blink_str = args[0]
-                print(f'Blink duration in ms: + {blink_str}')
+                # print(f'Blink duration in ms: + {args[0]}')
                 Frontend.num_blinks+=1
                 Frontend.total_blink_time+=args[0]
-                print(f'total number of blinks {Frontend.num_blinks}')
-                print(f'total time blinked {Frontend.total_blink_time}')
-                
-
                 #args[0] is duration in ms
                 
 
             elif event_type == Events.SACCADE.value:
                 Frontend.fixated_time = timestamp - Frontend.fixated_time - args[1]
                 print(f'Fixated time: {Frontend.fixated_time}')
+                Frontend.total_fixation_time+=Frontend.fixated_time
+                Frontend.num_fixation+=1
 
-                print(f'Saccade duration: {args[0]}')
-                print(f'Saccade amp: {args[1]}')
+                print(f'NUMBER OF FIXATIONS: {Frontend.num_fixation}')
+                print(f'SUM OF FIXATIONS: {Frontend.total_fixation_time}')
+
+                # print(f'Saccade duration: {args[0]}')
+                # print(f'Saccade amp: {args[1]}')
 
             # if event_type == Events.EYE_CLOSED.value:
             #     #print('Eye closed!')
@@ -150,8 +172,12 @@ class Frontend:
             elif event_type == Events.TRACKLOSS_END.value:
                 if Frontend.trackloss_on == [True,True]:
                     Frontend.trackloss_duration = timestamp - Frontend.trackloss_initial_time
-                    print(f'Trackloss Duration:{Frontend.trackloss_duration}')
+                    # print(f'Trackloss Duration:{Frontend.trackloss_duration}')
                     Frontend.trackloss_on[args[0]] = False
+
+                    if(Frontend.trackloss_duration>Frontend.TRACKLOSS_MAX):
+                        Frontend.num_trackloss+=1
+                        # print(f'TRACKLOSS RECORDED, num_trackloss is {Frontend.num_trackloss}')
 
                 else:
                     Frontend.trackloss_on = [False,False]
@@ -198,8 +224,10 @@ class Frontend:
             # Flags the frontend as connected
             self.connected = True
 
-    def analysis():
+    def blink_analysis():
 
+        #blink duration
+        #fixation duration
         if Frontend.data_point1==0:
             Frontend.data_point1=(Frontend.total_blink_time/Frontend.num_blinks)
             print(f'data point 1 is {Frontend.data_point1}')
@@ -212,16 +240,16 @@ class Frontend:
             Frontend.data_point2=(Frontend.total_blink_time/Frontend.num_blinks)
             print(f'data point 2 is {Frontend.data_point2}')
 
-            if len(Frontend.dblinklist)==Frontend.DATAPOINTS-1:
+            if len(Frontend.dblinklist)==Frontend.BLINK_DATAPOINTS-1:
                 Frontend.dblink_sum-=Frontend.dblinklist[0]
                 Frontend.dblinklist.pop(0)
                 Frontend.prev_dblink_average=Frontend.dblink_average
-                Frontend.dblink_average=float(Frontend.dblink_sum/(Frontend.DATAPOINTS-1))
+                Frontend.dblink_average=float(Frontend.dblink_sum/(Frontend.BLINK_DATAPOINTS-1))
         
         #start calculating derivative
         if Frontend.data_point1 !=0 and Frontend.data_point2 !=0:
-            print(f'this is being appended to dblinklist {(Frontend.data_point2-Frontend.data_point1)/Frontend.TIME_ELAPSED}')
-            Frontend.dblinklist.append((Frontend.data_point2-Frontend.data_point1)/Frontend.TIME_ELAPSED)
+            print(f'this is being appended to dblinklist {(Frontend.data_point2-Frontend.data_point1)/Frontend.BLINK_TIME_ELAPSED}')
+            Frontend.dblinklist.append((Frontend.data_point2-Frontend.data_point1)/Frontend.BLINK_TIME_ELAPSED)
             Frontend.dblink_sum+=Frontend.dblinklist[len(Frontend.dblinklist)-1]
 
 
@@ -229,6 +257,39 @@ class Frontend:
         print(f"Average dblink is {Frontend.dblink_average}")
         print(f"previous average dblink is {Frontend.prev_dblink_average}")
 
+
+    def fixation_analysis():
+
+        #blink duration
+        #fixation duration
+        if Frontend.fdata_point1==0:
+            Frontend.fdata_point1=(Frontend.total_fixation_time/Frontend.num_fixation)
+            print(f'data point 1 is {Frontend.fdata_point1}')
+        elif Frontend.fdata_point2==0:
+            Frontend.fdata_point2=(Frontend.total_fixation_time/Frontend.num_fixation)
+            print(f'data point 2 is {Frontend.fdata_point2}')
+        else:
+            Frontend.fdata_point1=Frontend.fdata_point2
+            print(f'data point 1 is {Frontend.fdata_point1}')
+            Frontend.data_point2=(Frontend.total_fixation_time/Frontend.num_fixation)
+            print(f'data point 2 is {Frontend.fdata_point2}')
+
+            if len(Frontend.dfixlist)==Frontend.FIX_DATAPOINTS-1:
+                Frontend.dfix_sum-=Frontend.dfixlist[0]
+                Frontend.dfixlist.pop(0)
+                Frontend.prev_dfix_average=Frontend.dfix_average
+                Frontend.dfix_average=float(Frontend.dfix_sum/(Frontend.FIX_DATAPOINTS-1))
+        
+        #start calculating derivative
+        if Frontend.fdata_point1 !=0 and Frontend.fdata_point2 !=0:
+            print(f'this is being appended to dfixlist {(Frontend.fdata_point2-Frontend.fdata_point1)/Frontend.FIX_TIME_ELAPSED}')
+            Frontend.dfixlist.append((Frontend.fdata_point2-Frontend.fdata_point1)/Frontend.FIX_TIME_ELAPSED)
+            Frontend.dfix_sum+=Frontend.dfixlist[len(Frontend.dfixlist)-1]
+
+
+        print(f"Sum dfix is {Frontend.dfix_sum}")
+        print(f"Average dfix is {Frontend.dfix_average}")
+        print(f"previous average dfix is {Frontend.prev_dfix_average}")
         
 
 
@@ -250,17 +311,39 @@ def main():
         frontend.quickstart()
 
 
-        counter =0
-        while True:
-            counter+=1
-            if(counter>Frontend.DATAPOINTS):
-                #performs analysis
-                if(Frontend.num_blinks!=0):
-                    Frontend.analysis()
+        blink_counter =0
+        fixation_counter=0
+        trackloss_counter=0
 
-                counter=0
-                Frontend.total_blink_time=0
-                Frontend.num_blinks=0
+        while True:
+            blink_counter+=1
+            fixation_counter+=1
+            trackloss_counter+=1
+
+            print(f'fixation count = {fixation_counter}')
+            # if(blink_counter>Frontend.BLINK_DATAPOINTS):
+            #     #performs analysis HAVE ANALYSIS RETURNS A TRUE OR FALSE
+            #     if(Frontend.num_blinks!=0):
+            #         Frontend.blink_analysis()
+
+            #     blink_counter=0
+            #     Frontend.total_blink_time=0
+            #     Frontend.num_blinks=0
+            if(fixation_counter>Frontend.FIX_DATAPOINTS):
+                print('FIXATION ANALYSIS RUNNING')
+                if(Frontend.num_fixation!=0):
+                    Frontend.fixation_analysis()
+                fixation_counter=0
+                Frontend.total_fixation_time=0
+                Frontend.num_fixation=0
+
+            # if Frontend.num_trackloss>Frontend.TRACKLOSS_DATAPOINTS:
+            #     print('trackloss exceeded')
+            #     frontend.shutdown()
+            # elif(trackloss_counter>Frontend.TRACKLOSS_TIME_ELAPSED):
+            #     trackloss_counter=0
+            #     Frontend.num_trackloss=0
+
 
             time.sleep(1)
     except (KeyboardInterrupt, SystemExit):
