@@ -1,2 +1,6 @@
 adhawk
 twilio
+tkinter
+customtkinter
+pyglet
+pillow

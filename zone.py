@@ -1,7 +1,8 @@
-
 ''' Demonstrates how to subscribe to and handle data from gaze and event streams '''
 import math
 import time
+import tkinter
+from tkinter.tix import IMAGETEXT
 import random
 import string
 from turtle import end_fill
@@ -12,6 +13,18 @@ import numpy as np
 import adhawkapi
 import adhawkapi.frontend
 from adhawkapi import Events, MarkerSequenceMode, PacketType
+from PIL import Image, ImageTk
+from twilio.rest import Client
+
+#DON'T CHANGE THESE
+ACCOUNT_ID = "AC60d011621f93dc3a30404c45975a7189"
+AUTH_TOKEN = "a575a4fbac25f8f3b682d617bb0f028a"
+
+client = Client(
+    ACCOUNT_ID, AUTH_TOKEN
+)
+
+from tkinter import *
 
 
 class Frontend:
@@ -68,6 +81,7 @@ class Frontend:
     username = ""
     username_found = False
                     
+
 
     #analysis stuff
     total_blink_time = 0
@@ -199,7 +213,6 @@ class Frontend:
                 else:
                     Frontend.total_fixation_time+=Frontend.fixated_time
                     Frontend.num_fixation+=1
-
                 # print(f'NUMBER OF FIXATIONS: {Frontend.num_fixation}')
                 # print(f'SUM OF FIXATIONS: {Frontend.total_fixation_time}')
 
@@ -287,6 +300,15 @@ class Frontend:
             self.connected = True
     
 
+    
+    def get_baselines(self):
+        with open("zone_data.csv", "r") as data:
+            zone_data = csv.DictReader(data)
+
+        #first row is header
+        #first column is 
+
+
     def blink_analysis():
 
         if Frontend.data_point1==0:
@@ -318,7 +340,7 @@ class Frontend:
         print(f"Average dblink is {Frontend.dblink_average}")
         print(f"previous average dblink is {Frontend.prev_dblink_average}")
 
-        if(Frontend.prev_dblink_average!=0 and Frontend.dblink_average/Frontend.prev_dblink_average > 1.5) or (Frontend.dblink_average < Frontend.min_blink_duration):
+        if(Frontend.prev_dblink_average!=0 and Frontend.dblink_average/Frontend.prev_dblink_average > 1.5):
             return False
         else:
             return True
@@ -362,7 +384,7 @@ class Frontend:
         print(f"previous average dfix is {Frontend.prev_dfix_average}")
         
 
-        # if(Frontend.prev_dfix_average!=0 and Frontend.dfix_average/Frontend.prev_dfix_average > 3) or or (Frontend.dfix_average < Frontend.min_fixation):
+        # if(Frontend.prev_dfix_average!=0 and Frontend.dfix_average/Frontend.prev_dfix_average > 3):
         #     return False
         # else:
         #     return True
@@ -371,6 +393,11 @@ class Frontend:
     
 #     return Frontend.num_trackloss<Frontend.TRACKLOSS_DATAPOINTS
 
+
+
+        
+
+def main(phone):
     def get_baselines(self):
         with open("zone_data.csv", "r") as data:
             zone_data = csv.reader(data)
@@ -389,25 +416,40 @@ class Frontend:
         
         if Frontend.username_found == False:
             print('Username not found')
-
-        
-
-def main():
     '''Main function'''
 
     frontend = Frontend()
     try:
-        print('Plug in your MindLink and ensure AdHawk Backend is running.')
-        while not frontend.connected:
-            pass  # Waits for the frontend to be connected before proceeding
+        # print('Plug in your MindLink and ensure AdHawk Backend is running.')
+        # while not frontend.connected:
+        #     pass  # Waits for the frontend to be connected before proceeding
 
-        input('Press Enter to run a Quick Start.')
+        # input('Press Enter to run a Quick Start.')
 
         # Runs a Quick Start at the user's command. This tunes the scan range and frequency to best suit the user's eye
         # and face shape, resulting in better tracking data. For the best quality results in your application, you
         # should also perform a calibration before using gaze data.
+        time.sleep(3)
         frontend.quickstart()
+        # time.sleep(3)
+        window=Tk()
+        lbl=Label(window, text="Please wait...", fg='black', font=("Helvetica", 16))
+        lbl.place(x=300, y=325, anchor = 'center')
+        window.title('Zone Eye Scanning')
+        window.geometry("600x750")
+        print('0987654321')
 
+        # Create a photoimage object of the image in the path
+        # image1 = Image.open("bg2.png")
+        # test = ImageTk.PhotoImage(image1)
+
+        # label1 = tkinter.Label(image=test)
+        # label1.image = test
+
+        # # Position image
+        # label1.place(x=0, y=0, width=600, height=750)
+        
+        print('1234567890')
 
         blink_counter =0
         fixation_counter=0
@@ -415,9 +457,29 @@ def main():
         baseline_counter = 0
 
         while True:
+
+            window.update()
             blink_counter+=1
             fixation_counter+=1
             trackloss_counter+=1
+            # print(f'blink_counter is {blink_counter}')
+            if(blink_counter>Frontend.BLINK_DATAPOINTS):
+                if(Frontend.num_blinks!=0):
+                    if(Frontend.blink_analysis()==False):
+                        lbl['text']='NOT FIT TO WORK DUE TO BLINK'
+                        lbl['fg']='red'
+                        print('NOT FIT TO WORK DUE TO BLINK')
+                        msg = client.messages.create(
+                        to="+16476395616", #REPLACE WITH DESIRED PHONE NUMBER (it's currently maggie's)
+                        from_="+17622357138", #DON'T CHANGE THIS!
+                        body="Worker [name] needs to be swapped out!") 
+                        print(f"Created a new message: {msg.sid}") 
+
+                    else:
+                        lbl['text']='FIT TO WORK'
+                        lbl['fg']='black'
+
+
             
             Frontend.baseline_bool = True
 
@@ -428,9 +490,9 @@ def main():
                     username = ''.join(random.choice(string.ascii_letters) for i in range(8))
 
                     Frontend.baseline_bool = False
-                    Frontend.min_blink_duration = np.percentile(Frontend.baseline_blink_duration, 80) * 1.3
+                    Frontend.min_blink_duration = np.percentile(Frontend.baseline_blink_duration, 20) * 0.7
                     Frontend.min_blink_frequency = np.percentile(Frontend.baseline_blink_frequency, 20) * 0.7
-                    Frontend.min_fixation = np.percentile(Frontend.baseline_fixation, 80) * 1.3
+                    Frontend.min_fixation = np.percentile(Frontend.baseline_fixation, 20) * 0.7
                     Frontend.min_saccade_peak_velocity = np.percentile(Frontend.baseline_saccade_peak_velocity, 20) * 0.7
                     Frontend.min_trackloss = np.percentile(Frontend.baseline_trackloss, 20) * 0.7
                     Frontend.min_pupil_diameter = np.percentile(Frontend.baseline_pupil_diameter, 20) * 0.7
@@ -474,6 +536,8 @@ def main():
 
             #     Frontend.num_trackloss=0
 
+            # window.mainloop()
+
             time.sleep(1)
     except (KeyboardInterrupt, SystemExit):
 
@@ -482,4 +546,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main('1930')
