@@ -41,6 +41,9 @@ class Frontend:
     TRACKLOSS_MAX= 3
     TRACKLOSS_SLEEP = 20
 
+    baseline_bool = False
+    baseline_counter = 0
+
     trackloss_initial_time = 0
     trackloss_on = [False,False]
     trackloss_duration = 0
