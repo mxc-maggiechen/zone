@@ -252,8 +252,12 @@ class Setup(tk.Frame):
         lbl.img = img  # Keep a reference in case this code put is in a function.
         lbl.place(relx=0.5, rely=0.5, anchor='center')  # Place label in center of parent.
 
-        label = customtkinter.CTkLabel(self, text ="Setting up...", text_font = ("Verdana", 27), bg_color = BG_COLOR)
-        label.place(x=window_width/2, y=300, anchor = 'center')
+        label = customtkinter.CTkLabel(self, text ="Please click the button below.", text_font = ("Verdana", 27), bg_color = BG_COLOR)
+        label.place(x=window_width/2, y=270, anchor = 'center')
+
+        button = customtkinter.CTkButton(self, text ="Continue to Eye Scanning",  text_font = MIDFONT, fg_color=DARK_BLUE, text_color=BG_COLOR, bg_color = BG_COLOR,
+                            command = lambda : zone.main(phone))
+        button.place(x=window_width/2, y=350, anchor = 'center')
 
         button = customtkinter.CTkButton(self, text ="Quit",  text_font = MIDFONT, fg_color=DARK_BLUE, text_color=BG_COLOR, bg_color = BG_COLOR,
                             command = lambda : controller.show_frame(Menu))
