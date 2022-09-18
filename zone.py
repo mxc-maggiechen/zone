@@ -311,7 +311,7 @@ class Frontend:
         else:
             Frontend.fdata_point1=Frontend.fdata_point2
             print(f'data point 1 is {Frontend.fdata_point1}')
-            Frontend.data_point2=(Frontend.total_fixation_time/Frontend.num_fixation)
+            Frontend.fdata_point2=(Frontend.total_fixation_time/Frontend.num_fixation)
             print(f'data point 2 is {Frontend.fdata_point2}')
 
             if len(Frontend.dfixlist)==Frontend.FIX_DATAPOINTS-1:
@@ -354,12 +354,33 @@ def main():
         trackloss_counter=0
 
         while True:
-            counter+=1
-            if(counter>Frontend.DATAPOINTS):
-                #performs analysis
-                if(Frontend.num_blinks!=0):
-                    Frontend.analysis()
+            blink_counter+=1
+            fixation_counter+=1
+            trackloss_counter+=1
 
+            print(f'fixation count = {fixation_counter}')
+            # if(blink_counter>Frontend.BLINK_DATAPOINTS):
+            #     #performs analysis HAVE ANALYSIS RETURNS A TRUE OR FALSE
+            #     if(Frontend.num_blinks!=0):
+            #         Frontend.blink_analysis()
+
+            #     blink_counter=0
+            #     Frontend.total_blink_time=0
+            #     Frontend.num_blinks=0
+            if(fixation_counter>Frontend.FIX_DATAPOINTS):
+                print('FIXATION ANALYSIS RUNNING')
+                if(Frontend.num_fixation!=0):
+                    Frontend.fixation_analysis()
+                fixation_counter=0
+                Frontend.total_fixation_time=0
+                Frontend.num_fixation=0
+
+            # if Frontend.num_trackloss>Frontend.TRACKLOSS_DATAPOINTS:
+            #     print('trackloss exceeded')
+            #     frontend.shutdown()
+            # elif(trackloss_counter>Frontend.TRACKLOSS_TIME_ELAPSED):
+            #     trackloss_counter=0
+            #     Frontend.num_trackloss=0
 
             time.sleep(1)
     except (KeyboardInterrupt, SystemExit):
