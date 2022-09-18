@@ -11,6 +11,8 @@ from adhawkapi import Events, MarkerSequenceMode, PacketType
 
 class Frontend:
     ''' Frontend communicating with the backend '''
+    DATAPOINTS=5
+    TIME_ELAPSED=10
 
     trackloss_initial_time = 0
     trackloss_on = [False,False]
@@ -21,6 +23,13 @@ class Frontend:
 
     total_blink_time =0
     num_blinks =0
+    dblink_sum =0
+    data_point1=0
+    data_point2=0
+    prev_dblink_average=0
+
+    blinklist =[]
+    dblinklist = []
 
     def __init__(self):
         # Instantiate an API object
@@ -113,8 +122,9 @@ class Frontend:
 
             elif event_type == Events.SACCADE.value:
             #     print('Saccade!')
-                print(f'Saccade duration: {args[0]}')
-                print(f'Saccade amp: {args[1]}')
+                pass
+                # print(f'Saccade duration: {args[0]}')
+                # print(f'Saccade amp: {args[1]}')
 
             # if event_type == Events.EYE_CLOSED.value:
             #     #print('Eye closed!')
@@ -174,8 +184,8 @@ class Frontend:
 
         if self._allow_output:
             self._last_console_print = timestamp
-            print(f'right diametre: {data[0]}')
-            print(f'left diametre: {data[1]}')
+            # print(f'right diametre: {data[0]}')
+            # print(f'left diametre: {data[1]}')
 
         
 
@@ -207,6 +217,42 @@ class Frontend:
             # Flags the frontend as connected
             self.connected = True
 
+    def analysis():
+        
+        dblink_average=0
+
+        if Frontend.data_point1==0:
+            Frontend.data_point1=(Frontend.total_blink_time/Frontend.num_blinks)
+            print(f'data point 1 is {Frontend.data_point1}')
+        elif Frontend.data_point2==0:
+            Frontend.data_point2=(Frontend.total_blink_time/Frontend.num_blinks)
+            print(f'data point 2 is {Frontend.data_point2}')
+        else:
+            Frontend.data_point1=Frontend.data_point2
+            print(f'data point 1 is {Frontend.data_point1}')
+            Frontend.data_point2=(Frontend.total_blink_time/Frontend.num_blinks)
+            print(f'data point 2 is {Frontend.data_point2}')
+
+            if len(Frontend.dblinklist)==Frontend.DATAPOINTS-1:
+                Frontend.dblink_sum-=Frontend.dblinklist[0]
+                Frontend.dblinklist.pop(0)
+                Frontend.prev_dblink_average=dblink_average
+                dblink_average=float(Frontend.dblink_sum/(Frontend.DATAPOINTS-1))
+        
+        #start calculating derivative
+        if Frontend.data_point1 !=0 and Frontend.data_point2 !=0:
+            print(f'this is being appended to dblinklist {(Frontend.data_point2-Frontend.data_point1)/Frontend.TIME_ELAPSED}')
+            Frontend.dblinklist.append((Frontend.data_point2-Frontend.data_point1)/Frontend.TIME_ELAPSED)
+            Frontend.dblink_sum+=Frontend.dblinklist[len(Frontend.dblinklist)-1]
+
+
+        print(f"Sum dblink is {Frontend.dblink_sum}")
+        print(f"Average dblink is {dblink_average}")
+        print(f"previous average dblink is {Frontend.prev_dblink_average}")
+
+        
+
+
 
 def main():
     '''Main function'''
@@ -228,8 +274,11 @@ def main():
         counter =0
         while True:
             counter+=1
-            if(counter>30):
+            if(counter>Frontend.DATAPOINTS):
                 #performs analysis
+                if(Frontend.num_blinks!=0):
+                    Frontend.analysis()
+
                 counter=0
                 Frontend.total_blink_time=0
                 Frontend.num_blinks=0
