@@ -16,12 +16,12 @@ class Frontend:
 
     trackloss_initial_time = 0
     trackloss_on = [False,False]
-    trackloss_eyes = [0,0]
+    trackloss_duration = 0
     eye_closed_time = 0
     eye_was_closed = False
-    duration = 0
+    fixated_time = 0
 
-    total_blink_time =0
+    total_blink_time = 0
     num_blinks =0
     dblink_sum =0
     data_point1=0
@@ -121,10 +121,11 @@ class Frontend:
                 
 
             elif event_type == Events.SACCADE.value:
-            #     print('Saccade!')
-                pass
-                # print(f'Saccade duration: {args[0]}')
-                # print(f'Saccade amp: {args[1]}')
+                Frontend.fixated_time = timestamp - Frontend.fixated_time - args[1]
+                print(f'Fixated time: {Frontend.fixated_time}')
+
+                print(f'Saccade duration: {args[0]}')
+                print(f'Saccade amp: {args[1]}')
 
             # if event_type == Events.EYE_CLOSED.value:
             #     #print('Eye closed!')
@@ -145,36 +146,15 @@ class Frontend:
                     Frontend.trackloss_initial_time = timestamp
 
 
-            # if event_type == Events.TRACKLOSS_END.value:
-            #     Frontend.trackloss_on[args[0]] = False
-            
-            # elif event_type == Events.TRACKLOSS_END.value:
+            elif event_type == Events.TRACKLOSS_END.value:
+                if Frontend.trackloss_on == [True,True]:
+                    Frontend.trackloss_duration = timestamp - Frontend.trackloss_initial_time
+                    print(f'Trackloss Duration:{Frontend.trackloss_duration}')
+                    Frontend.trackloss_on[args[0]] = False
 
-            #     Frontend.trackloss_eyes[args[0]] = (timestamp - Frontend.trackloss_initial_time)
-            #     Frontend.trackloss_initial_time[args[0]] = 0
+                else:
+                    Frontend.trackloss_on = [False,False]
 
-            #     if 0 in Frontend.trackloss_eyes[args[0]]:
-            #         Frontend.duration = Frontend.trackloss[args[0]] - Frontend.trackloss_initial_time
-            #         Frontend.duration[args[0]] = 0
-                
-            #     else: 
-            #         Frontend.duration = min(Frontend.trackloss_eyes[0]+ Frontend.trackloss_eyes[1]) - Frontend.trackloss_initial_time
-            #         Frontend.duration = [0,0]
-
-                
-                # if args[0]==0:
-                #     right_duration = timestamp - Frontend.trackloss_initial_time
-                #     print(f'right trackloss duration was {right_duration}')
-                # else:
-                #     left_duration = timestamp - Frontend.trackloss_initial_time
-                #     print(f'left trackloss duration was {left_duration}')
-                
-                # if Frontend.trackloss_on == [False,False]:
-                #     Frontend.total_duration = (right_duration+left_duration)/2
-                #     print(f'average trackloss duration was {Frontend.total_duration}')
-                
-
-            
 
     def handler_pupil_stream(self, timestamp, *data):
         right_pupil, left_pupil = data
