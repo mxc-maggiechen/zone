@@ -15,6 +15,7 @@ customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
 window_width = 600
 window_height = 750
+phone = +11231231234
 # 600, 750
  
 LARGEFONT = ("futura_medium_bt", 39)
@@ -25,7 +26,7 @@ DARK_PURPLE = '#5F0F40'
 BG_COLOR = '#EDE6C0'
   
 class tkinterApp(tk.Tk):
-     
+    
     # __init__ function for class tkinterApp
     def __init__(self, *args, **kwargs):
          
@@ -217,6 +218,7 @@ class Contact(tk.Frame):
         entry1.place(x=window_width/2+40, y=330, anchor = "center")
 
         label2 = customtkinter.CTkLabel(self, text='Number:', text_font = MIDFONT)
+        phone = label2.get()
         label2.place(x=window_width/2-165, y=400, anchor = "center")
 
         entry2 = customtkinter.CTkEntry (self, text_font = MIDFONT, width=300)
@@ -264,7 +266,7 @@ class Shift(tk.Frame):
         label.place(x=window_width/2, y=350, anchor = 'center')
 
         button = customtkinter.CTkButton(self, text ="Begin", text_font = MIDFONT, fg_color=DARK_BLUE, text_color=BG_COLOR,
-                            command = lambda : zone.main('123'))
+                            command = lambda : zone.main(phone))
         button.place(x=window_width/2, y=430, anchor = 'center')
 
         button = customtkinter.CTkButton(self, text ="Quit", text_font = MIDFONT, fg_color=DARK_BLUE, text_color=BG_COLOR,
