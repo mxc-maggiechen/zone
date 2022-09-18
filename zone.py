@@ -1,11 +1,14 @@
-
 ''' Demonstrates how to subscribe to and handle data from gaze and event streams '''
 import math
 import time
 import tkinter
 from tkinter.tix import IMAGETEXT
+import random
+import string
 from turtle import end_fill
 import csv
+from xml.etree.ElementTree import TreeBuilder
+import numpy as np
 
 import adhawkapi
 import adhawkapi.frontend
@@ -51,13 +54,33 @@ class Frontend:
     TRACKLOSS_MAX= 3
     TRACKLOSS_SLEEP = 20
 
+    baseline_bool = False
+    baseline_counter = 0
+
     trackloss_initial_time = 0
     trackloss_on = [False,False]
     trackloss_duration = 0
     eye_closed_time = 0
     eye_was_closed = False
     fixated_time = 0
+    saccade_velocity = 0
 
+    baseline_bool = False
+    baseline_blink_duration = []
+    baseline_blink_frequency = []
+    baseline_fixation = []
+    baseline_saccade_peak_velocity = []
+    baseline_trackloss = []
+    baseline_pupil_diameter= []
+    min_blink_duration = 0
+    min_blink_frequency = 0
+    min_fixation = 0
+    min_saccade_peak_velocity = 0
+    min_trackloss = 0
+    min_pupil_diameter = 0
+    username = ""
+    username_found = False
+                    
 
 
     #analysis stuff
@@ -166,6 +189,9 @@ class Frontend:
                 print(f'Blink duration in ms: + {args[0]}')
                 Frontend.num_blinks+=1
                 Frontend.total_blink_time+=args[0]
+
+                if Frontend.baseline_bool == True:
+                    Frontend.baseline_blink_duration.append(args[0])
                 #args[0] is duration in ms
                 
 
@@ -173,12 +199,20 @@ class Frontend:
                 Frontend.fixated_time = timestamp - Frontend.fixated_time - args[1]
                 # print(f'Fixated time: {Frontend.fixated_time}')
 
-                if(Frontend.fixated_time>Frontend.TRACKLOSS_SLEEP):
+                saccade_duration = args[0]
+                saccade_amp = args[1]
+
+                Frontend.saccade_velocity = saccade_amp/saccade_duration
+
+                if Frontend.baseline_bool == True:
+                    Frontend.baseline_fixation.append(Frontend.fixated_time)
+                    Frontend.baseline_saccade.append(Frontend.saccade_velocity)
+
+                elif(Frontend.fixated_time>Frontend.TRACKLOSS_SLEEP):
                     Frontend.sleep=True
                 else:
                     Frontend.total_fixation_time+=Frontend.fixated_time
                     Frontend.num_fixation+=1
-
                 # print(f'NUMBER OF FIXATIONS: {Frontend.num_fixation}')
                 # print(f'SUM OF FIXATIONS: {Frontend.total_fixation_time}')
 
@@ -210,7 +244,10 @@ class Frontend:
                     # print(f'Trackloss Duration:{Frontend.trackloss_duration}')
                     Frontend.trackloss_on[args[0]] = False
 
-                    if(Frontend.trackloss_duration>Frontend.TRACKLOSS_MAX):
+                    if Frontend.baseline_bool == True:
+                        Frontend.baseline_trackloss.append(Frontend.trackloss_duration)
+
+                    elif(Frontend.trackloss_duration>Frontend.TRACKLOSS_MAX):
                         Frontend.num_trackloss+=1
                         # print(f'TRACKLOSS RECORDED, num_trackloss is {Frontend.num_trackloss}')
 
@@ -226,11 +263,14 @@ class Frontend:
 
         if self._allow_output:
             self._last_console_print = timestamp
+
+            average_diameter = (data[0]+data[1])/2
+            if Frontend.baseline_bool == True:
+                Frontend.baseline_pupil_diameter.appennd(average_diameter)
             # print(f'right diametre: {data[0]}')
             # print(f'left diametre: {data[1]}')
 
         
-
 
     def _handle_connect_response(self, error):
         ''' Handler for backend connections '''
@@ -259,23 +299,6 @@ class Frontend:
             # Flags the frontend as connected
             self.connected = True
     
-    def create_baseline(self):
-        total_seconds = 3600
-
-        while total_seconds > 0:
-            
-            #blink duration
-            #blink frequency
-            #fixation duration
-            #saccade peak velocity
-            # eye closure time
-            #pupil dilation range
-
-
-            time.sleep(1)
-            total_seconds-=1
-        
-
 
     
     def get_baselines(self):
@@ -284,6 +307,7 @@ class Frontend:
 
         #first row is header
         #first column is 
+
 
     def blink_analysis():
 
@@ -370,9 +394,28 @@ class Frontend:
 #     return Frontend.num_trackloss<Frontend.TRACKLOSS_DATAPOINTS
 
 
+
         
 
 def main(phone):
+    def get_baselines(self):
+        with open("zone_data.csv", "r") as data:
+            zone_data = csv.reader(data)
+
+        Frontend.username_found = False
+        
+        for line in csv.reader:
+            if line[0] == Frontend.username:
+                Frontend.username_found = True
+                Frontend.min_blink_duration = line[1]
+                Frontend.min_blink_frequency = line[2]
+                Frontend.min_fixation = line[3]
+                Frontend.min_saccade_peak_velocity = line[4]
+                Frontend.min_trackloss = line[5]
+                Frontend.min_pupil_diameter = line[6]
+        
+        if Frontend.username_found == False:
+            print('Username not found')
     '''Main function'''
 
     frontend = Frontend()
@@ -411,8 +454,10 @@ def main(phone):
         blink_counter =0
         fixation_counter=0
         trackloss_counter=0
+        baseline_counter = 0
 
         while True:
+
             window.update()
             blink_counter+=1
             fixation_counter+=1
@@ -434,6 +479,39 @@ def main(phone):
                         lbl['text']='FIT TO WORK'
                         lbl['fg']='black'
 
+
+            
+            Frontend.baseline_bool = True
+
+            if Frontend.baseline_bool == True:
+                if baseline_counter <= 3600:
+                    baseline_counter += 1
+                else:
+                    username = ''.join(random.choice(string.ascii_letters) for i in range(8))
+
+                    Frontend.baseline_bool = False
+                    Frontend.min_blink_duration = np.percentile(Frontend.baseline_blink_duration, 20) * 0.7
+                    Frontend.min_blink_frequency = np.percentile(Frontend.baseline_blink_frequency, 20) * 0.7
+                    Frontend.min_fixation = np.percentile(Frontend.baseline_fixation, 20) * 0.7
+                    Frontend.min_saccade_peak_velocity = np.percentile(Frontend.baseline_saccade_peak_velocity, 20) * 0.7
+                    Frontend.min_trackloss = np.percentile(Frontend.baseline_trackloss, 20) * 0.7
+                    Frontend.min_pupil_diameter = np.percentile(Frontend.baseline_pupil_diameter, 20) * 0.7
+                    export_array = [username,Frontend.baseline_bool,Frontend.min_blink_duration, Frontend.min_blink_frequency, Frontend.min_fixation, \
+                        Frontend.min_saccade_peak_velocity, Frontend.min_trackloss, Frontend.min_pupil_diameter]
+
+                    with open("zone_data.csv", "w") as data:
+                        writer = csv.writer(data)
+                        writer.writerow(export_array)
+
+                    #execute code to save data to file
+        
+
+
+            if(blink_counter>Frontend.BLINK_DATAPOINTS):
+                if(Frontend.num_blinks!=0):
+                    if(Frontend.blink_analysis()==False):
+                        print('NOT FIT TO WORK DUE TO BLINK')
+                    else:
                         print('FIT TO WORK')
                 blink_counter=0
                 Frontend.total_blink_time=0
@@ -457,7 +535,9 @@ def main(phone):
             #     trackloss_counter=0
 
             #     Frontend.num_trackloss=0
+
             # window.mainloop()
+
             time.sleep(1)
     except (KeyboardInterrupt, SystemExit):
 

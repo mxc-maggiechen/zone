@@ -75,18 +75,27 @@ class tkinterApp(tk.Tk):
 class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+        img = ImageTk.PhotoImage(Image.open(
+            'bg1.png').resize((600, 750), Image.ANTIALIAS))
 
-        img = ImageTk.PhotoImage(Image.open('bg1.png').resize((600, 750), Image.ANTIALIAS))
+
         lbl = tk.Label(self, image=img)
         lbl.img = img  # Keep a reference in case this code put is in a function.
-        lbl.place(relx=0.5, rely=0.5, anchor='center')  # Place label in center of parent.
+        # Place label in center of parent.
+        lbl.place(relx=0.5, rely=0.5, anchor='center')
 
-        img5 = ImageTk.PhotoImage(Image.open('logoorng.png').resize((340, 100), Image.ANTIALIAS))
-        lbl5 = tk.Label(self, image=img5)
-        lbl5.img15 = img5  # Keep a reference in case this code put is in a function.
-        lbl5.place(x=window_width/2, y=355, anchor='center')  # Place label in center of parent.
+        title_img = ImageTk.PhotoImage(Image.open(
+            'logored.png').resize((472, 293), Image.ANTIALIAS))
+        title_lbl = tk.Label(self, image = title_img)
+        title_lbl.place()
+        # label of frame Layout 2
+        title_lbl.place(anchor="center", x=window_width/2, y=270)
+        # putting the grid in its place by using
+        # grid
+        # label.grid(row = 0, column = 1, padx = 0, pady = 10)
 
-        button1 = customtkinter.CTkButton(self, text ="Log in", text_font = MIDFONT, fg_color=DARK_BLUE, text_color=BG_COLOR,
+        button1 = customtkinter.CTkButton(self, text ="Log in", text_font = MIDFONT,
+
         command = lambda : controller.show_frame(Login))
      
         # putting the button in its place by
