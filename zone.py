@@ -200,6 +200,8 @@ class Frontend:
     
     def baseline(self):
         # run algorithm
+        pass
+
         
 
 
