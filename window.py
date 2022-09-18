@@ -1,8 +1,22 @@
 import tkinter as tk
 from tkinter import ttk
-  
+import customtkinter
+from zone import main;
+
+# main()
+
+customtkinter.set_appearance_mode("System")
+customtkinter.set_default_color_theme("blue")
+window_width = 600
+window_height = 750
+# 600, 750
  
-LARGEFONT =("Verdana", 34)
+LARGEFONT = ("Mono", 39)
+MIDFONT = ("Mono", 18)
+
+DARK_BLUE = "#003049"
+DARK_PURPLE = "5F0F40"
+BG_COLOR = "EDE6C0"
   
 class tkinterApp(tk.Tk):
      
@@ -50,27 +64,30 @@ class StartPage(tk.Frame):
         tk.Frame.__init__(self, parent)
          
         # label of frame Layout 2
-        label = ttk.Label(self, text ="Zone", font = LARGEFONT)
-         
+        label = customtkinter.CTkLabel(self, text ="Zone", text_font = ('Mono', 60))
+        label.place(anchor="center", x=window_width/2, y=270)
         # putting the grid in its place by using
         # grid
-        label.grid(row = 0, column = 1, padx = 0, pady = 10)
-  
-        ## button to show frame 2 with text layout2
-        button1 = ttk.Button(self, text ="Sign up",
-        command = lambda : controller.show_frame(Signup))
-     
-        # putting the button in its place by
-        # using grid
-        button1.grid(row = 1, column = 1, padx = 60, pady = 10)
+        # label.grid(row = 0, column = 1, padx = 0, pady = 10)
 
-
-        button2 = ttk.Button(self, text ="Login",
+        button1 = customtkinter.CTkButton(self, text ="Log in", text_font = MIDFONT,
         command = lambda : controller.show_frame(Login))
      
         # putting the button in its place by
         # using grid
-        button2.grid(row = 2, column = 1, padx = 120, pady = 10)
+        # button1.grid(row = 1, column = 1, padx = 120, pady = (100, 10))
+        button1.place(x=window_width/2, y=500, anchor="center")
+
+        ## button to show frame 2 with text layout2
+        button2 = customtkinter.CTkButton(self, text ="Sign up", text_font = MIDFONT,
+        command = lambda : controller.show_frame(Signup))
+     
+        # putting the button in its place by
+        # using grid
+        button2.place(x=window_width/2, y=550, anchor="center")
+
+
+        
   
           
   
@@ -81,25 +98,27 @@ class Login(tk.Frame):
     def __init__(self, parent, controller):
          
         tk.Frame.__init__(self, parent)
-        label = ttk.Label(self, text ="Login", font = LARGEFONT)
+        label = customtkinter.CTkLabel(self, text ="Log in", text_font = LARGEFONT)
         label.grid(row = 0, column = 1, padx = 0, pady = 10)
+        label.place(x=window_width/2, y=200, anchor="center")
+
   
         # button to show frame 2 with text
         # layout2
      
-        label1 = ttk.Label(self, text='Type in your code:')
-        label1.grid(row = 1, column = 1, padx = 120, pady = 5)
+        label1 = customtkinter.CTkLabel(self, text='Type in your code:', text_font = MIDFONT, anchor='center')
+        label1.place(x=window_width/2-80, anchor="center", y=335)
 
-        entry1 = tk.Entry (self)
-        entry1.grid(row=2, column = 1, padx = 0, pady = 5)
+        entry1 = customtkinter.CTkEntry (self, text_font = MIDFONT)
+        entry1.place(x=window_width/2+30, y=320)
 
-        button2 = ttk.Button(self, text ="Submit",
+        button2 = customtkinter.CTkButton(self, text ="Submit", text_font = MIDFONT, 
                             command = lambda : controller.show_frame(Menu))
-        button2.grid(row = 3, column = 1, padx = 0, pady = 5)
+        button2.place(x=window_width/2, y=450, anchor = "center")
 
-        button1 = ttk.Button(self, text ="Back",
+        button1 = customtkinter.CTkButton(self, text ="Back", text_font = MIDFONT,
                             command = lambda : controller.show_frame(StartPage))
-        button1.grid(row = 4, column = 1, padx = 120, pady = 10)
+        button1.place(x=window_width/2, y=500, anchor = "center")
 
   
   
@@ -109,44 +128,44 @@ class Login(tk.Frame):
 class Signup(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = ttk.Label(self, text ="Signup", font = LARGEFONT)
-        label.grid(row = 0, column = 1, padx = 0, pady = 10)
+        label = customtkinter.CTkLabel(self, text ="Sign up", text_font = LARGEFONT)
+        label.place(x=window_width/2, y=200, anchor="center")
   
         # button to show frame 2 with text
         # layout2
      
-        label1 = ttk.Label(self, text='Type in your phone number:')
-        label1.grid(row = 1, column = 1, padx = 0, pady = 5)
+        label1 = customtkinter.CTkLabel(self, text='Type in your phone number:', text_font=MIDFONT)
+        label1.place(x=window_width/2, y=300, anchor="center")
 
-        entry1 = tk.Entry (self)
-        entry1.grid(row=2, column = 1, padx = 0, pady = 5)
+        entry1 = customtkinter.CTkEntry (self, text_font=MIDFONT, width=500)
+        entry1.place(x=window_width/2, y=340, anchor="center")
 
-        button2 = ttk.Button(self, text ="Submit",
+        button2 = customtkinter.CTkButton(self, text ="Submit", text_font=MIDFONT,
                             command = lambda : controller.show_frame(Setup))
-        button2.grid(row = 3, column = 1, padx = 120, pady = 5)
+        button2.place(x=window_width/2, y=450, anchor="center")
 
-        button1 = ttk.Button(self, text ="Back",
+        button1 = customtkinter.CTkButton(self, text ="Back", text_font=MIDFONT,
                             command = lambda : controller.show_frame(StartPage))
-        button1.grid(row = 4, column = 1, padx = 120, pady = 10)
+        button1.place(x=window_width/2, y=500, anchor="center")
 
 # Menu page
 class Menu(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = ttk.Label(self, text ="Menu", font = LARGEFONT)
-        label.grid(row = 0, column = 1, padx = 0, pady = 10)
+        label = customtkinter.CTkLabel(self, text ="Menu", text_font = LARGEFONT)
+        label.place(x=window_width/2, y=200, anchor="center")
 
-        button1 = ttk.Button(self, text ="Backup Contact",
+        button1 = customtkinter.CTkButton(self, text ="Backup Contact", text_font = MIDFONT,
                             command = lambda : controller.show_frame(Contact))
-        button1.grid(row = 1, column = 1, padx = 90, pady = 10)
+        button1.place(x=window_width/2, y=350, anchor="center")
 
-        button2 = ttk.Button(self, text ="Start shift",
+        button2 = customtkinter.CTkButton(self, text ="Start shift", text_font = MIDFONT,
                             command = lambda : controller.show_frame(Shift))
-        button2.grid(row = 2, column = 1, padx = 0, pady = 10)
+        button2.place(x=window_width/2, y=430, anchor="center")
 
-        button3 = ttk.Button(self, text ="Update baseline",
+        button3 = customtkinter.CTkButton(self, text ="Update baseline", text_font = MIDFONT,
                             command = lambda : controller.show_frame(Setup))
-        button3.grid(row = 3, column = 1, padx = 120, pady = 10)
+        button3.place(x=window_width/2, y=510, anchor="center")
 
 
 # Contact page
@@ -154,46 +173,52 @@ class Contact(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        label = ttk.Label(self, text ="Contact Method", font = ("Verdana", 27))
-        label.grid(row = 0, column = 1, padx = 20, pady = 10)
+        label = customtkinter.CTkLabel(self, text ="Contact Method", text_font = LARGEFONT)
+        label.place(x=window_width/2, y=200, anchor = "center")
         # label.pack(padx = 3, pady = 10)
 
-        label1 = ttk.Label(self, text='Email:')
-        label1.grid(row = 1, column = 1, padx = 90, pady = (5,0))
+        label1 = customtkinter.CTkLabel(self, text='Email:', text_font = MIDFONT)
+        label1.place(x=window_width/2-150, y=330, anchor = "center")
 
-        entry1 = tk.Entry (self)
-        entry1.grid(row=2, column = 1, padx = 10, pady = (0,5))
+        entry1 = customtkinter.CTkEntry (self, text_font = MIDFONT, width = 300)
+        entry1.place(x=window_width/2+40, y=330, anchor = "center")
 
-        label2 = ttk.Label(self, text='Number:')
-        label2.grid(row = 3, column = 1, padx = 90, pady = (5,0))
+        label2 = customtkinter.CTkLabel(self, text='Number:', text_font = MIDFONT)
+        label2.place(x=window_width/2-165, y=400, anchor = "center")
 
-        entry2 = tk.Entry (self)
-        entry2.grid(row=4, column = 1, padx = 10, pady = (0,5))
+        entry2 = customtkinter.CTkEntry (self, text_font = MIDFONT, width=300)
+        entry2.place(x=window_width/2+40, y=400, anchor = "center")
 
-        button2 = ttk.Button(self, text ="Submit",
+        button2 = customtkinter.CTkButton(self, text ="Submit", text_font = MIDFONT,
                             command = lambda : controller.show_frame(Menu))
-        button2.grid(row = 5, column = 1, padx = 0, pady = 5)
+        button2.place(x=window_width/2, y=500, anchor = "center")
 
 # Setup
 class Setup(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        label = ttk.Label(self, text ="Setting up...", font = ("Verdana", 27))
-        label.grid(row = 0, column = 1, padx = 20, pady = 10)
+        label = customtkinter.CTkLabel(self, text ="Setting up...", text_font = ("Verdana", 27))
+        label.place(x=window_width/2, y=300, anchor = 'center')
 
-        button = ttk.Button(self, text ="Quit",
+        button = customtkinter.CTkButton(self, text ="Quit",  text_font = MIDFONT,
                             command = lambda : controller.show_frame(Menu))
-        button.grid(row = 5, column = 1, padx = 0, pady = (100, 5))
+        button.place(x=window_width/2, y=400, anchor = 'center')
 
 # Shift
 class Shift(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        label = ttk.Label(self, text ="Starting shift...", font = ("Verdana", 27))
-        label.grid(row = 0, column = 1, padx = 20, pady = (10, 200))
+        label = customtkinter.CTkLabel(self, text ="Starting shift...", text_font = ("Verdana", 27))
+        label.place(x=window_width/2, y=300, anchor = 'center')
+
+        button = customtkinter.CTkButton(self, text ="Quit", text_font = MIDFONT,
+                            command = lambda : controller.show_frame(Menu))
+        button.place(x=window_width/2, y=400, anchor = 'center')
   
 # Driver Code
 app = tkinterApp()
+app.geometry(f'{window_width}x{window_height}')
+# app = customtkinter.CTk()
 app.mainloop()
