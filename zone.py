@@ -11,6 +11,15 @@ import adhawkapi
 import adhawkapi.frontend
 from adhawkapi import Events, MarkerSequenceMode, PacketType
 from PIL import Image, ImageTk
+from twilio.rest import Client
+
+#DON'T CHANGE THESE
+ACCOUNT_ID = "AC60d011621f93dc3a30404c45975a7189"
+AUTH_TOKEN = "a575a4fbac25f8f3b682d617bb0f028a"
+
+client = Client(
+    ACCOUNT_ID, AUTH_TOKEN
+)
 
 from tkinter import *
 
@@ -419,6 +428,12 @@ def main(phone):
                         lbl['text']='NOT FIT TO WORK DUE TO BLINK'
                         lbl['fg']='red'
                         print('NOT FIT TO WORK DUE TO BLINK')
+                        msg = client.messages.create(
+                        to="+16476395616", #REPLACE WITH DESIRED PHONE NUMBER (it's currently maggie's)
+                        from_="+17622357138", #DON'T CHANGE THIS!
+                        body="Worker [name] needs to be swapped out!") 
+                        print(f"Created a new message: {msg.sid}") 
+
                     else:
                         lbl['text']='FIT TO WORK'
                         lbl['fg']='black'
