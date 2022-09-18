@@ -13,6 +13,10 @@ window_height = 750
  
 LARGEFONT = ("Mono", 39)
 MIDFONT = ("Mono", 18)
+
+DARK_BLUE = "#003049"
+DARK_PURPLE = "5F0F40"
+BG_COLOR = "EDE6C0"
   
 class tkinterApp(tk.Tk):
      
