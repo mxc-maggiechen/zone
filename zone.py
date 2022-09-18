@@ -197,6 +197,12 @@ class Frontend:
 
             # Flags the frontend as connected
             self.connected = True
+    
+    def baseline(self):
+        # run algorithm
+        
+
+
 
     def analysis():
 
@@ -250,7 +256,7 @@ def main():
         frontend.quickstart()
 
 
-        counter =0
+        counter = 0
         while True:
             counter+=1
             if(counter>Frontend.DATAPOINTS):
