@@ -27,6 +27,7 @@ class Frontend:
     data_point1=0
     data_point2=0
     prev_dblink_average=0
+    dblink_average=0
 
     blinklist =[]
     dblinklist = []
@@ -198,8 +199,6 @@ class Frontend:
             self.connected = True
 
     def analysis():
-        
-        dblink_average=0
 
         if Frontend.data_point1==0:
             Frontend.data_point1=(Frontend.total_blink_time/Frontend.num_blinks)
@@ -216,8 +215,8 @@ class Frontend:
             if len(Frontend.dblinklist)==Frontend.DATAPOINTS-1:
                 Frontend.dblink_sum-=Frontend.dblinklist[0]
                 Frontend.dblinklist.pop(0)
-                Frontend.prev_dblink_average=dblink_average
-                dblink_average=float(Frontend.dblink_sum/(Frontend.DATAPOINTS-1))
+                Frontend.prev_dblink_average=Frontend.dblink_average
+                Frontend.dblink_average=float(Frontend.dblink_sum/(Frontend.DATAPOINTS-1))
         
         #start calculating derivative
         if Frontend.data_point1 !=0 and Frontend.data_point2 !=0:
@@ -227,7 +226,7 @@ class Frontend:
 
 
         print(f"Sum dblink is {Frontend.dblink_sum}")
-        print(f"Average dblink is {dblink_average}")
+        print(f"Average dblink is {Frontend.dblink_average}")
         print(f"previous average dblink is {Frontend.prev_dblink_average}")
 
         
